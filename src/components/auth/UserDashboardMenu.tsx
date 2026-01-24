@@ -1,4 +1,4 @@
-{\rtf1}import {
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
