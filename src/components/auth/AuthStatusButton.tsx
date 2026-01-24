@@ -1,7 +1,6 @@
-{\rtf1}import { LogIn, User, CheckCircle, ExternalLink } from "lucide-react";
-import { Button } from "../ui/button"; // shadcn ui button 사용 가정 (없으면 일반 button 태그 사용)
+import { LogIn, User, CheckCircle } from "lucide-react";
 
-// 상태 타입 정의
+// 상태 타입 정의 (다른 컴포넌트에서도 사용하므로 export 유지)
 export type AuthStatus = 'guest' | 'google' | 'cafe';
 
 interface AuthStatusButtonProps {
@@ -12,7 +11,7 @@ interface AuthStatusButtonProps {
 
 export function AuthStatusButton({ status, onLogin, onVerify }: AuthStatusButtonProps) {
   
-  // 1. 비로그인 상태 (게스트) -> 구글 로그인 유도
+  // 1. 비로그인 상태 (게스트) -> 로그인 유도
   if (status === 'guest') {
     return (
       <button
@@ -25,7 +24,7 @@ export function AuthStatusButton({ status, onLogin, onVerify }: AuthStatusButton
     );
   }
 
-  // 2. 구글 로그인 완료 -> 네이버 카페 인증 유도
+  // 2. 구글 로그인 완료 -> 카페 인증 유도
   if (status === 'google') {
     return (
       <button
