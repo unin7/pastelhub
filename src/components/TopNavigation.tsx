@@ -1,11 +1,12 @@
-// TopNavigation.tsx
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User, Sparkles } from 'lucide-react'; // Search 아이콘 제거
+import { Sparkles } from 'lucide-react';
 
-interface MenuItem {
-  path: string;
-  label: string;
-}
+// 위에서 만든 컴포넌트 불러오기
+import { AuthStatusButton, AuthStatus } from './auth/AuthStatusButton'; 
+import { UserDashboardMenu } from './auth/UserDashboardMenu';
+
+interface MenuItem { path: string; label: string; }
 
 const menuItems: MenuItem[] = [
   { path: '/news', label: '소식' },
@@ -17,62 +18,80 @@ const menuItems: MenuItem[] = [
 
 export function TopNavigation() {
   const location = useLocation();
+  
+  // ✅ 로그인 상태 관리 (테스트용)
+  const [status, setStatus] = useState<AuthStatus>('guest');
+
+  // 동작 시뮬레이션 함수들
+  const handleLogin = () => {
+    alert("구글 로그인 창이 열립니다.");
+    setStatus('google'); 
+  };
+
+  const handleVerify = () => {
+    alert("네이버 카페 인증을 진행합니다.");
+    setStatus('cafe'); 
+  };
+
+  const handleLogout = () => {
+    setStatus('guest');
+  };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/40 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          
-          {/* Logo Section */}
-          <Link
-            to="/"
-            className="group flex items-center gap-1.5 transition-opacity hover:opacity-80"
-          >
-            <Sparkles className="h-5 w-5 text-indigo-300 transition-transform duration-500 group-hover:rotate-180" />
-            <h1 className="font-extrabold text-2xl tracking-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-pink-400">
-                pastel
-              </span>
-              <span className="text-slate-700">hub</span>
-            </h1>
-          </Link>
-
-          {/* Center Menu - Pill Shape Design */}
-          <div className="hidden md:flex items-center gap-1 bg-white/40 px-2 py-1.5 rounded-full border border-white/50 shadow-sm backdrop-blur-sm">
-            {menuItems.map((menu) => {
-              const isActive = location.pathname.startsWith(menu.path);
-
-              return (
-                <Link
-                  key={menu.path}
-                  to={menu.path}
-                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out ${
-                    isActive
-                      ? 'bg-white text-indigo-500 shadow-md ring-1 ring-black/5 scale-100'
-                      : 'text-slate-500 hover:text-indigo-400 hover:bg-white/60'
-                  }`}
-                >
-                  {menu.label}
-                  {isActive && (
-                    <span className="absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-indigo-300" />
-                  )}
-                </Link>
-              );
-            })}
+    <nav className="sticky top-0 z-50 w-full border-b border-white/40 bg-white/70 backdrop-blur-xl h-16 flex-none transition-all duration-300">
+      <div className="w-full h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        
+        {/* 1. 로고 (홈으로 이동) */}
+        <Link to="/" className="flex items-center gap-2 group min-w-max">
+          <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+            <Sparkles className="size-5" />
           </div>
+          <span className="hidden md:block font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+            PastelHub
+          </span>
+        </Link>
 
-          {/* Right Icons - Soft Buttons */}
-          <div className="flex items-center gap-3">
-            {/* Search Button Removed */}
-            
-            <button 
-              className="group flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-50 to-pink-50 text-slate-500 transition-all duration-300 hover:bg-white hover:text-pink-500 hover:shadow-md hover:scale-105"
-              aria-label="User Profile"
-            >
-              <User className="h-5 w-5" />
-            </button>
-          </div>
+        {/* 2. 중앙 탭 메뉴 */}
+        <div className="hidden lg:flex items-center gap-1 bg-white/50 px-1.5 py-1.5 rounded-full border border-white/60 shadow-inner">
+          {menuItems.map((menu) => {
+            const isActive = location.pathname.startsWith(menu.path);
+            return (
+              <Link
+                key={menu.path}
+                to={menu.path}
+                className={`
+                  relative px-6 py-2 rounded-full text-sm font-medium transition-all duration-300
+                  ${isActive 
+                    ? 'text-indigo-600 bg-white shadow-sm ring-1 ring-black/5' 
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-white/60'}
+                `}
+              >
+                {menu.label}
+                {isActive && (
+                  <span className="absolute -bottom-1 left-1/2 w-1 h-1 bg-indigo-500 rounded-full -translate-x-1/2 opacity-0 transition-all duration-300 lg:opacity-100" />
+                )}
+              </Link>
+            );
+          })}
         </div>
+
+        {/* 3. 우측: 인증 버튼 & 대시보드 */}
+        <div className="flex items-center gap-3 min-w-max justify-end">
+          
+          {/* 상태별 액션 버튼 (로그인/인증) */}
+          <AuthStatusButton 
+            status={status} 
+            onLogin={handleLogin} 
+            onVerify={handleVerify} 
+          />
+
+          {/* 유저 대시보드 (드롭다운) */}
+          <UserDashboardMenu 
+            status={status} 
+            onLogout={handleLogout} 
+          />
+        </div>
+
       </div>
     </nav>
   );

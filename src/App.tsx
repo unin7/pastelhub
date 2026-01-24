@@ -1,8 +1,7 @@
-// App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { TopNavigation } from "./components/TopNavigation";
-import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar"; 
+import { SidebarProvider } from "./components/ui/sidebar"; 
 import { AppSidebar } from "./components/AppSidebar"; 
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 
@@ -18,19 +17,19 @@ export default function App() {
     <ErrorBoundary>
       <AuthProvider>
         <BrowserRouter>
-          <SidebarProvider>
-            <div className="flex min-h-screen w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-              {/* ✅ 스마트 사이드바 적용 */}
-              <AppSidebar />
-              
-              <div className="flex flex-1 flex-col overflow-hidden">
-                {/* 상단 네비게이션 (사이드바 트리거 포함) */}
-                <header className="flex h-14 items-center gap-4 border-b bg-white/50 px-4 backdrop-blur-md lg:h-[60px]">
-                  <SidebarTrigger /> {/* ⬅️ 사이드바 열고 닫는 버튼 */}
-                  <TopNavigation />
-                </header>
+          <div className="flex min-h-screen flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+            
+            {/* 1. 상단 네비게이션 (고정) */}
+            <TopNavigation />
 
-                {/* 메인 콘텐츠 영역 */}
+            {/* 2. 하단 영역 (사이드바 + 메인 콘텐츠) */}
+            <SidebarProvider className="flex-1 flex overflow-hidden">
+              <div className="flex w-full h-full">
+                
+                {/* 왼쪽 고정 패널 */}
+                <AppSidebar />
+                
+                {/* 메인 콘텐츠 */}
                 <main className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                   <ErrorBoundary>
                     <Routes>
@@ -45,8 +44,8 @@ export default function App() {
                   </ErrorBoundary>
                 </main>
               </div>
-            </div>
-          </SidebarProvider>
+            </SidebarProvider>
+          </div>
         </BrowserRouter>
       </AuthProvider>
     </ErrorBoundary>
