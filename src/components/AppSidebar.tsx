@@ -2,9 +2,9 @@ import * as React from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
   // 공통
-  Home, ChevronLeft,
+  Home, Circle, Radio,
   // News
-  Calendar, FileText, Twitter, Radio, Music, Youtube,
+  Calendar, FileText, Twitter as TwitterIcon, Radio as RadioIcon, Music, Youtube,
   // Others
   Image, Mic, Gamepad, ShoppingBag, Megaphone, Bell,
   // Goods
@@ -14,6 +14,7 @@ import {
   // Guide
   BookOpen, Heart, PenTool, Users, Siren
 } from "lucide-react";
+import { useJsonData } from "../hooks/useJsonData"; // 훅 경로 확인해주세요
 import {
   Sidebar,
   SidebarContent,
@@ -27,12 +28,23 @@ import {
   useSidebar,
 } from "./ui/sidebar";
 
-// --- 메뉴 데이터 정의 ---
+// ----------------------------------------------------------------------
+// 1. 데이터 타입 및 메뉴 정의
+// ----------------------------------------------------------------------
+
+interface LiveStatus {
+  name: string;
+  status: string;
+  title: string;
+  profileImg: string;
+  liveUrl: string;
+}
+
 const newsSections = [
   { title: "일정 · D-DAY", icon: Calendar, url: "/news/schedule" },
-  { title: "방송 현황", icon: Radio, url: "/news/broadcast" },
+  { title: "방송 현황", icon: RadioIcon, url: "/news/broadcast" },
   { title: "팬카페 공지", icon: FileText, url: "/news/cafe" },
-  { title: "X (트위터)", icon: Twitter, url: "/news/twitter" },
+  { title: "X (트위터)", icon: TwitterIcon, url: "/news/twitter" },
   { title: "YouTube", icon: Youtube, url: "/news/videos" },
   { title: "최근 노래", icon: Music, url: "/news/songs" },
 ];
@@ -74,14 +86,86 @@ const guideSections = [
   { title: '신고/문의', icon: Siren, url: '/guide/report' },
 ];
 
+// ----------------------------------------------------------------------
+// 2. 내부 컴포넌트: 홈 화면일 때 보일 Live Status 목록
+// ----------------------------------------------------------------------
+function HomeSidebarContent() {
+  const { data: members } = useJsonData<LiveStatus[]>('status');
+
+  const getStatusColor = (status: string) => {
+    if (status.includes('live')) return 'text-green-500';
+    return 'text-gray-300';
+  };
+
+  return (
+    <div className="h-full px-2 py-4">
+      <div className="mb-3 px-2 flex items-center gap-2">
+         <Radio className="w-3 h-3 text-purple-600 animate-pulse" />
+         <p className="text-xs font-bold text-purple-600 tracking-wider">LIVE STATION</p>
+      </div>
+
+      <div className="space-y-1">
+        {members?.map((member, idx) => {
+           const isLive = member.status.includes('live');
+           return (
+             <a
+               key={idx}
+               href={member.liveUrl}
+               target="_blank" 
+               rel="noreferrer"
+               className={`flex items-center gap-3 px-2 py-2 rounded-xl transition-all cursor-pointer group ${
+                   isLive 
+                   ? 'bg-white shadow-sm ring-1 ring-purple-100 hover:shadow-md' 
+                   : 'hover:bg-white/60'
+               }`}
+             >
+               {/* 아바타 */}
+               <div className={`relative w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 p-[2px] ${
+                 isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100'
+               }`}>
+                 <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border border-white" />
+                 {isLive && (
+                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
+                 )}
+               </div>
+
+               {/* 정보 */}
+               <div className="flex-1 min-w-0">
+                 <div className="flex items-center justify-between">
+                   <span className={`text-xs font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500'}`}>
+                     {member.name}
+                   </span>
+                   {isLive && (
+                     <span className="text-[9px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse">
+                       LIVE
+                     </span>
+                   )}
+                 </div>
+                 <p className="text-[10px] text-gray-400 truncate mt-0.5">
+                   {isLive ? '방송 중입니다!' : member.title}
+                 </p>
+               </div>
+             </a>
+           );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 3. 메인 컴포넌트: AppSidebar
+// ----------------------------------------------------------------------
 export function AppSidebar() {
   const location = useLocation();
   const { setOpenMobile } = useSidebar();
+  const pathname = location.pathname;
 
   // 현재 경로 확인
-  const pathname = location.pathname;
+  const isHome = pathname === "/";
+
   let items = [];
-  let label = "메뉴";
+  let label = "";
 
   if (pathname.startsWith("/news")) {
     items = newsSections;
@@ -98,26 +182,24 @@ export function AppSidebar() {
   } else if (pathname.startsWith("/guide")) {
     items = guideSections;
     label = "가이드 (Guide)";
-  } else {
-    items = [
-      { title: "홈으로", icon: Home, url: "/" },
-      { title: "소식 보러가기", icon: Calendar, url: "/news/schedule" },
-    ];
   }
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="border-r-0">
+      {/* 배경 스타일 적용 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 via-purple-50/50 to-pink-50/50 -z-10" />
+      
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link to="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-sm">
                   <Home className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">PastelHub</span>
-                  <span className="">v0.1.0</span>
+                  <span className="font-bold text-gray-800">PastelHub</span>
+                  <span className="text-[10px] text-gray-500">v0.1.0</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -126,30 +208,39 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{label}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location.pathname === item.url}
-                    tooltip={item.title}
-                  >
-                    <Link 
-                      to={item.url} 
-                      onClick={() => setOpenMobile(false)}
+        {isHome ? (
+          // ✅ 홈 화면: Live Status 패널 (통합됨)
+          <HomeSidebarContent />
+        ) : (
+          // ✅ 서브 페이지: 해당 메뉴 목록
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-2">
+              {label}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="px-2">
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={pathname === item.url}
+                      tooltip={item.title}
+                      className="data-[active=true]:bg-white data-[active=true]:shadow-sm data-[active=true]:text-purple-600 transition-all duration-200"
                     >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                      <Link 
+                        to={item.url} 
+                        onClick={() => setOpenMobile(false)}
+                      >
+                        <item.icon />
+                        <span className="font-medium">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
     </Sidebar>
   );
