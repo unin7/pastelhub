@@ -17,7 +17,8 @@ interface UserDashboardMenuProps {
 
 export function UserDashboardMenu({ status, onLogout }: UserDashboardMenuProps) {
   return (
-    <DropdownMenu>
+    // ✅ modal={false} : 드롭다운이 열려있어도 뒤쪽 페이지 스크롤 가능
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button 
           className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-50 to-pink-50 text-slate-500 transition-all duration-300 hover:bg-white hover:text-pink-500 hover:shadow-md hover:scale-105 outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-200"
@@ -30,7 +31,10 @@ export function UserDashboardMenu({ status, onLogout }: UserDashboardMenuProps) 
         </button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent 
+        className="w-56 max-h-[80vh] overflow-y-auto" 
+        align="end"
+      >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">사용자 님</p>
