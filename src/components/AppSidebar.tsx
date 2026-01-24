@@ -14,7 +14,7 @@ import {
   // Guide
   BookOpen, Heart, PenTool, Users, Siren
 } from "lucide-react";
-import { useJsonData } from "../hooks/useJsonData"; // 훅 경로 확인해주세요
+import { useJsonData } from "../hooks/useJsonData";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "./ui/sidebar";
+import { cn } from "../lib/utils"; // cn 유틸리티가 없다면 간단히 문자열 합치기로 대체 가능
 
 // ----------------------------------------------------------------------
 // 1. 데이터 타입 및 메뉴 정의
@@ -87,7 +88,7 @@ const guideSections = [
 ];
 
 // ----------------------------------------------------------------------
-// 2. 내부 컴포넌트: 홈 화면일 때 보일 Live Status 목록
+// 2. 홈 화면: Live Status 패널
 // ----------------------------------------------------------------------
 function HomeSidebarContent() {
   const { data: members } = useJsonData<LiveStatus[]>('status');
@@ -98,13 +99,13 @@ function HomeSidebarContent() {
   };
 
   return (
-    <div className="h-full px-2 py-4">
-      <div className="mb-3 px-2 flex items-center gap-2">
-         <Radio className="w-3 h-3 text-purple-600 animate-pulse" />
-         <p className="text-xs font-bold text-purple-600 tracking-wider">LIVE STATION</p>
+    <div className="h-full px-3 py-4">
+      <div className="mb-4 px-2 flex items-center gap-2">
+         <Radio className="w-4 h-4 text-purple-600 animate-pulse" />
+         <p className="text-sm font-bold text-purple-900/80 tracking-wide">LIVE STATION</p>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-2">
         {members?.map((member, idx) => {
            const isLive = member.status.includes('live');
            return (
@@ -113,35 +114,35 @@ function HomeSidebarContent() {
                href={member.liveUrl}
                target="_blank" 
                rel="noreferrer"
-               className={`flex items-center gap-3 px-2 py-2 rounded-xl transition-all cursor-pointer group ${
+               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 cursor-pointer group border ${
                    isLive 
-                   ? 'bg-white shadow-sm ring-1 ring-purple-100 hover:shadow-md' 
-                   : 'hover:bg-white/60'
+                   ? 'bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200' 
+                   : 'border-transparent hover:bg-white/60 hover:border-gray-100'
                }`}
              >
                {/* 아바타 */}
-               <div className={`relative w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 p-[2px] ${
+               <div className={`relative w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 p-[2px] transition-transform group-hover:scale-105 ${
                  isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100'
                }`}>
                  <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border border-white" />
                  {isLive && (
-                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
+                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>
                  )}
                </div>
 
                {/* 정보 */}
                <div className="flex-1 min-w-0">
                  <div className="flex items-center justify-between">
-                   <span className={`text-xs font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500'}`}>
+                   <span className={`text-sm font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>
                      {member.name}
                    </span>
                    {isLive && (
-                     <span className="text-[9px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse">
+                     <span className="text-[10px] font-extrabold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse tracking-tight">
                        LIVE
                      </span>
                    )}
                  </div>
-                 <p className="text-[10px] text-gray-400 truncate mt-0.5">
+                 <p className="text-xs text-gray-400 truncate mt-0.5 group-hover:text-gray-500 transition-colors">
                    {isLive ? '방송 중입니다!' : member.title}
                  </p>
                </div>
@@ -154,52 +155,63 @@ function HomeSidebarContent() {
 }
 
 // ----------------------------------------------------------------------
-// 3. 메인 컴포넌트: AppSidebar
+// 3. 메인 컴포넌트: AppSidebar (테마 적용)
 // ----------------------------------------------------------------------
 export function AppSidebar() {
   const location = useLocation();
   const { setOpenMobile } = useSidebar();
   const pathname = location.pathname;
 
-  // 현재 경로 확인
   const isHome = pathname === "/";
 
   let items = [];
   let label = "";
+  let themeClass = ""; // 섹션별 테마 클래스
 
+  // 🔥 섹션별 색상 테마 정의 (기존 페이지 느낌 그대로!)
   if (pathname.startsWith("/news")) {
     items = newsSections;
     label = "소식 (News)";
+    // News: 파란색/하늘색 계열
+    themeClass = "data-[active=true]:bg-blue-50 data-[active=true]:text-blue-600 data-[active=true]:border-blue-200 hover:bg-blue-50/50 hover:text-blue-600";
   } else if (pathname.startsWith("/goods")) {
     items = goodsSections;
     label = "굿즈 · 멤버십";
+    // Goods: 보라색 계열
+    themeClass = "data-[active=true]:bg-purple-50 data-[active=true]:text-purple-600 data-[active=true]:border-purple-200 hover:bg-purple-50/50 hover:text-purple-600";
   } else if (pathname.startsWith("/activities")) {
     items = activitySections;
     label = "활동 (Activities)";
+    // Activities: 분홍색 계열
+    themeClass = "data-[active=true]:bg-pink-50 data-[active=true]:text-pink-600 data-[active=true]:border-pink-200 hover:bg-pink-50/50 hover:text-pink-600";
   } else if (pathname.startsWith("/others")) {
     items = otherSections;
     label = "기타 (Others)";
+    // Others: 초록색/에메랄드 계열
+    themeClass = "data-[active=true]:bg-emerald-50 data-[active=true]:text-emerald-600 data-[active=true]:border-emerald-200 hover:bg-emerald-50/50 hover:text-emerald-600";
   } else if (pathname.startsWith("/guide")) {
     items = guideSections;
     label = "가이드 (Guide)";
+    // Guide: 인디고 계열
+    themeClass = "data-[active=true]:bg-indigo-50 data-[active=true]:text-indigo-600 data-[active=true]:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-600";
   }
 
   return (
-    <Sidebar collapsible="icon" className="border-r-0">
-      {/* 배경 스타일 적용 */}
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 via-purple-50/50 to-pink-50/50 -z-10" />
+    <Sidebar collapsible="icon" className="border-r-0 bg-transparent">
+      {/* 배경 스타일: 전체적으로 은은한 그라데이션 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/50 to-white -z-10" />
       
-      <SidebarHeader>
+      <SidebarHeader className="pb-0">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton size="lg" asChild className="hover:bg-transparent active:bg-transparent">
               <Link to="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-sm">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-md transition-transform hover:scale-105">
                   <Home className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-bold text-gray-800">PastelHub</span>
-                  <span className="text-[10px] text-gray-500">v0.1.0</span>
+                  <span className="font-bold text-gray-800 text-base">PastelHub</span>
+                  <span className="text-[10px] text-gray-500 font-medium">v0.1.0</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -207,32 +219,37 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-2">
         {isHome ? (
-          // ✅ 홈 화면: Live Status 패널 (통합됨)
           <HomeSidebarContent />
         ) : (
-          // ✅ 서브 페이지: 해당 메뉴 목록
           <SidebarGroup>
-            <SidebarGroupLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-2">
+            <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mt-2 mb-1">
               {label}
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="px-2">
+              <SidebarMenu className="gap-1.5">
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton 
                       asChild 
                       isActive={pathname === item.url}
                       tooltip={item.title}
-                      className="data-[active=true]:bg-white data-[active=true]:shadow-sm data-[active=true]:text-purple-600 transition-all duration-200"
+                      // 👇 여기서 위에서 정의한 테마 색상을 적용합니다!
+                      className={`
+                        h-10 rounded-xl transition-all duration-300 border border-transparent font-medium
+                        text-gray-500
+                        ${themeClass}
+                        data-[active=true]:shadow-sm data-[active=true]:font-bold
+                      `}
                     >
                       <Link 
                         to={item.url} 
                         onClick={() => setOpenMobile(false)}
+                        className="flex items-center gap-3 px-3"
                       >
-                        <item.icon />
-                        <span className="font-medium">{item.title}</span>
+                        <item.icon className="size-5" />
+                        <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
