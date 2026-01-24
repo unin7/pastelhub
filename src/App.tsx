@@ -2,7 +2,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { TopNavigation } from "./components/TopNavigation";
-import { Sidebar } from "./components/ui/Sidebar";
+import { sidebar } from "./components/ui/sidebar";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 
 import { HomePage } from "./features/home/HomePage";
@@ -24,7 +24,7 @@ export default function App() {
             {/* T자형 레이아웃: 좌측 사이드바 + 메인 콘텐츠 */}
             <div className="flex-1 overflow-hidden flex">
               {/* 좌측 사이드바 */}
-              <Sidebar />
+              <sidebar />
 
               {/* 메인 콘텐츠 영역 */}
               <main className="flex-1 overflow-y-auto custom-scrollbar">
