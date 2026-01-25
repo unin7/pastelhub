@@ -12,7 +12,6 @@ import {
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, 
   useSidebar 
 } from "./ui/sidebar";
-// ✅ 유틸리티 경로 수정됨
 import { cn } from "../utils/common";
 
 // ----------------------------------------------------------------------
@@ -33,26 +32,26 @@ function HomeSidebarContent() {
   const { data: members } = useJsonData<LiveStatus[]>('status');
 
   return (
-    <div className="h-full px-3 py-4">
-      <div className="mb-4 px-2 flex items-center gap-2">
-         <Radio className="w-4 h-4 text-purple-600 animate-pulse" />
-         <p className="text-sm font-bold text-purple-900/80 tracking-wide">LIVE STATION</p>
+    <div className="h-full px-4 py-6">
+      <div className="mb-5 px-2 flex items-center gap-2">
+         <Radio className="w-5 h-5 text-purple-600 animate-pulse" />
+         <p className="text-base font-bold text-purple-900/80 tracking-wide">LIVE STATION</p>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {members?.map((member, idx) => {
            const isLive = member.status.includes('live');
            return (
-             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 cursor-pointer group border ${ isLive ? 'bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200' : 'border-transparent hover:bg-white/60 hover:border-gray-100' }`}>
-               <div className={`relative w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 p-[2px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}>
-                 <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border border-white" />
-                 {isLive && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>}
+             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 cursor-pointer group border ${ isLive ? 'bg-white shadow-md border-purple-100 hover:shadow-lg hover:border-purple-200' : 'border-transparent hover:bg-white/60 hover:border-gray-100' }`}>
+               <div className={`relative w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}>
+                 <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border-2 border-white" />
+                 {isLive && <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>}
                </div>
                <div className="flex-1 min-w-0">
                  <div className="flex items-center justify-between">
-                   <span className={`text-sm font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{member.name}</span>
-                   {isLive && <span className="text-[10px] font-extrabold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse tracking-tight">LIVE</span>}
+                   <span className={`text-base font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{member.name}</span>
+                   {isLive && <span className="text-[11px] font-extrabold text-red-500 bg-red-50 px-2 py-0.5 rounded-full animate-pulse tracking-tight">LIVE</span>}
                  </div>
-                 <p className="text-xs text-gray-400 truncate mt-0.5 group-hover:text-gray-500 transition-colors">{isLive ? '방송 중입니다!' : member.title}</p>
+                 <p className="text-sm text-gray-400 truncate mt-1 group-hover:text-gray-500 transition-colors">{isLive ? '방송 중입니다!' : member.title}</p>
                </div>
              </a>
            );
@@ -71,29 +70,29 @@ function GuideSidebarContent() {
   return (
     <div className="h-full flex flex-col">
       {/* 검색창 */}
-      <div className="px-4 py-4 sticky top-0 bg-white/50 backdrop-blur-sm z-10 border-b border-indigo-100/50">
+      <div className="px-5 py-6 sticky top-0 bg-white/50 backdrop-blur-sm z-10 border-b border-indigo-100/50">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
           <input 
             type="text" 
             placeholder="가이드 검색..." 
-            className="w-full pl-9 pr-4 py-2 bg-white/80 border border-indigo-100 rounded-xl text-sm text-indigo-900 placeholder:text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all shadow-sm"
+            className="w-full pl-11 pr-4 py-3 bg-white/80 border border-indigo-100 rounded-2xl text-base text-indigo-900 placeholder:text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all shadow-sm"
           />
         </div>
       </div>
 
       {/* 목차 리스트 */}
-      <div className="flex-1 overflow-y-auto px-2 py-3">
-        <SidebarGroupLabel className="px-4 text-xs font-bold text-indigo-400/80 mb-2">목차 (Table of Contents)</SidebarGroupLabel>
-        <SidebarMenu className="gap-1">
+      <div className="flex-1 overflow-y-auto px-3 py-4">
+        <SidebarGroupLabel className="px-4 text-xs font-bold text-indigo-400/80 mb-3">목차 (Table of Contents)</SidebarGroupLabel>
+        <SidebarMenu className="gap-2">
           {guideSections.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild className="h-10 rounded-lg hover:bg-indigo-50/80 hover:text-indigo-600 text-gray-500 transition-all">
-                <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-3 px-3">
-                  <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-400 group-hover:bg-white group-hover:shadow-sm transition-all">
-                    <item.icon className="size-4" />
+              <SidebarMenuButton asChild className="h-14 rounded-xl hover:bg-indigo-50/80 hover:text-indigo-600 text-gray-500 transition-all">
+                <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
+                  <div className="p-2 rounded-lg bg-indigo-50 text-indigo-400 group-hover:bg-white group-hover:shadow-sm transition-all">
+                    <item.icon className="size-5" />
                   </div>
-                  <span className="font-medium text-sm">{item.title}</span>
+                  <span className="font-medium text-base">{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -115,7 +114,7 @@ export function AppSidebar() {
   let items: any[] = [];
   let label = "";
   
-  // 섹션별 테마 설정 (ActivitiesPage 디자인 매칭)
+  // 섹션별 테마 설정
   let themeConfig = {
     activeBg: "",
     iconActive: "",
@@ -128,7 +127,7 @@ export function AppSidebar() {
   if (pathname.startsWith("/news")) { 
     items = newsSections; label = "소식 (News)"; 
     themeConfig = {
-      activeBg: "bg-white/90 border-blue-200 shadow-lg ring-1 ring-blue-100",
+      activeBg: "bg-white/90 border-blue-200 shadow-xl ring-1 ring-blue-100",
       iconActive: "bg-gradient-to-br from-blue-400 to-cyan-400 shadow-blue-200 text-white",
       iconInactive: "bg-white text-blue-300 group-hover:text-blue-400",
       textActive: "text-blue-900",
@@ -139,7 +138,7 @@ export function AppSidebar() {
   else if (pathname.startsWith("/goods")) { 
     items = goodsSections; label = "굿즈 · 멤버십"; 
     themeConfig = {
-      activeBg: "bg-white/90 border-purple-200 shadow-lg ring-1 ring-purple-100",
+      activeBg: "bg-white/90 border-purple-200 shadow-xl ring-1 ring-purple-100",
       iconActive: "bg-gradient-to-br from-purple-400 to-violet-400 shadow-purple-200 text-white",
       iconInactive: "bg-white text-purple-300 group-hover:text-purple-400",
       textActive: "text-purple-900",
@@ -150,7 +149,7 @@ export function AppSidebar() {
   else if (pathname.startsWith("/activities")) { 
     items = activitySections; label = "활동 (Activities)"; 
     themeConfig = {
-      activeBg: "bg-white/90 border-pink-200 shadow-lg ring-1 ring-pink-100",
+      activeBg: "bg-white/90 border-pink-200 shadow-xl ring-1 ring-pink-100",
       iconActive: "bg-gradient-to-br from-pink-400 to-rose-400 shadow-pink-200 text-white",
       iconInactive: "bg-white text-pink-300 group-hover:text-pink-400",
       textActive: "text-pink-900",
@@ -161,7 +160,7 @@ export function AppSidebar() {
   else if (pathname.startsWith("/others")) { 
     items = otherSections; label = "기타 (Others)"; 
     themeConfig = {
-      activeBg: "bg-white/90 border-emerald-200 shadow-lg ring-1 ring-emerald-100",
+      activeBg: "bg-white/90 border-emerald-200 shadow-xl ring-1 ring-emerald-100",
       iconActive: "bg-gradient-to-br from-emerald-400 to-teal-400 shadow-emerald-200 text-white",
       iconInactive: "bg-white text-emerald-300 group-hover:text-emerald-400",
       textActive: "text-emerald-900",
@@ -170,10 +169,10 @@ export function AppSidebar() {
     };
   }
 
-  // 항상 고정된 패널 (collapsible="none")
+  // ✅ w-80 (320px)으로 통일하여 중간 크기 확보
   return (
-    <Sidebar collapsible="none" className="border-r bg-white/30 backdrop-blur-sm w-72 h-full">
-      <SidebarContent className="px-2 pt-6">
+    <Sidebar collapsible="none" className="border-r bg-white/30 backdrop-blur-sm w-80 h-full">
+      <SidebarContent className="px-3 pt-8">
         
         {/* 1. 홈 화면 */}
         {pathname === "/" ? (
@@ -184,37 +183,37 @@ export function AppSidebar() {
         ) : (
           /* 3. 메뉴 화면 (소식/활동/굿즈/기타) */
           <SidebarGroup>
-            <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mb-1">
+            <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">
               {label}
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-2">
+              <SidebarMenu className="gap-2.5">
                 {items.map((item) => {
-                  // 현재 URL과 아이템 URL이 일치하는지 확인
                   const isActive = pathname === item.url;
                   
                   return (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton 
                         asChild 
+                        // ✅ h-14 (56px)로 버튼 크기 확대
                         className={cn(
-                          "h-12 rounded-xl transition-all duration-300 border border-transparent font-medium group",
+                          "h-14 rounded-2xl transition-all duration-300 border border-transparent font-medium group",
                           isActive ? themeConfig.activeBg : themeConfig.hover,
                           isActive ? "scale-[1.02]" : "hover:scale-[1.01]"
                         )}
                       >
-                        <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-3 px-3">
-                          {/* 아이콘 박스 (ActivitiesPage 스타일) */}
+                        <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
+                          {/* ✅ 아이콘 박스 크기 확대 (w-10 h-10) */}
                           <div className={cn(
-                            "w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                            "w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
                             isActive ? themeConfig.iconActive : themeConfig.iconInactive
                           )}>
-                            <item.icon className="size-4" />
+                            <item.icon className="size-5" /> {/* 아이콘 크기 확대 */}
                           </div>
                           
-                          {/* 텍스트 */}
+                          {/* ✅ 텍스트 크기 확대 (text-base) */}
                           <span className={cn(
-                            "text-sm transition-colors",
+                            "text-base transition-colors",
                             isActive ? themeConfig.textActive : themeConfig.textInactive,
                             !isActive && "group-hover:text-gray-700"
                           )}>
