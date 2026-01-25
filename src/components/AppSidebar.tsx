@@ -33,19 +33,13 @@ function HomeSidebarContent() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-5 pt-8 pb-4 flex-none">
-        <div className="flex items-center gap-2 px-1">
-           <Radio className="w-5 h-5 text-purple-600 animate-pulse" />
-           <p className="text-base font-bold text-purple-900/80 tracking-wide">LIVE STATION</p>
-        </div>
-      </div>
-      
-      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-3 custom-scrollbar">
+      {/* ✅ LIVE STATION 헤더 제거됨 */}
+      <div className="flex-1 overflow-y-auto px-3 py-6 space-y-3 custom-scrollbar">
         {members?.map((member, idx) => {
            const isLive = member.status.includes('live');
            return (
              <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className={`flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-300 cursor-pointer group border ${ isLive ? 'bg-white shadow-md border-purple-100 hover:shadow-lg hover:border-purple-200' : 'border-transparent hover:bg-white/60 hover:border-gray-100' }`}>
-               {/* ✅ 이미지 크기 강제 고정 (style 사용) */}
+               {/* 이미지 크기 고정 */}
                <div 
                  className={`relative rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}
                  style={{ width: '44px', height: '44px', minWidth: '44px' }} 
@@ -54,7 +48,7 @@ function HomeSidebarContent() {
                  {isLive && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>}
                </div>
                
-               {/* ✅ 텍스트 영역 (min-w-0으로 말줄임표 강제 적용) */}
+               {/* 텍스트 영역 (말줄임표 적용) */}
                <div className="flex-1 min-w-0">
                  <div className="flex items-center justify-between">
                    <span className={`text-sm font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{member.name}</span>
@@ -75,12 +69,25 @@ function HomeSidebarContent() {
 // ----------------------------------------------------------------------
 function GuideSidebarContent() {
   const { setOpenMobile } = useSidebar();
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  // ✅ 가이드 전용 테마 (Indigo)
+  const guideTheme = {
+    activeBg: "bg-white/90 border-indigo-200 shadow-xl ring-1 ring-indigo-100",
+    iconActive: "bg-gradient-to-br from-indigo-400 to-violet-400 shadow-indigo-200 text-white",
+    iconInactive: "bg-white text-indigo-300 group-hover:text-indigo-400",
+    textActive: "text-indigo-900",
+    textInactive: "text-gray-500",
+    hover: "hover:bg-white/80 hover:border-indigo-100 hover:shadow-md"
+  };
   
   return (
     <div className="h-full flex flex-col">
       <div className="px-4 py-6 sticky top-0 bg-white/50 backdrop-blur-sm z-10 border-b border-indigo-100/50 flex-none">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
+          {/* ✅ 검색 아이콘 위치 정밀 보정 */}
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 pointer-events-none" />
           <input 
             type="text" 
             placeholder="가이드 검색..." 
@@ -91,19 +98,38 @@ function GuideSidebarContent() {
 
       <div className="flex-1 overflow-y-auto px-2 py-4 custom-scrollbar">
         <SidebarGroupLabel className="px-4 text-xs font-bold text-indigo-400/80 mb-3">목차 (Table of Contents)</SidebarGroupLabel>
-        <SidebarMenu className="gap-2">
-          {guideSections.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild className="h-12 rounded-xl hover:bg-indigo-50/80 hover:text-indigo-600 text-gray-500 transition-all">
-                <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-3 px-3">
-                  <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-400 group-hover:bg-white group-hover:shadow-sm transition-all">
-                    <item.icon className="size-4" />
-                  </div>
-                  <span className="font-medium text-sm">{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+        <SidebarMenu className="gap-2.5"> {/* 간격 조정 */}
+          {guideSections.map((item) => {
+            // ✅ 가이드 메뉴에도 Active/Hover 스타일 적용
+            const isActive = pathname === item.url;
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton 
+                  asChild 
+                  className={cn(
+                    "h-14 rounded-2xl transition-all duration-300 border border-transparent font-medium group",
+                    isActive ? guideTheme.activeBg : guideTheme.hover,
+                    isActive ? "scale-[1.02]" : "hover:scale-[1.01]"
+                  )}
+                >
+                  <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
+                    <div 
+                      className={cn(
+                        "rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                        isActive ? guideTheme.iconActive : guideTheme.iconInactive
+                      )}
+                      style={{ width: '40px', height: '40px', minWidth: '40px' }}
+                    >
+                      <item.icon className="size-5" />
+                    </div>
+                    <span className={cn("text-base transition-colors", isActive ? guideTheme.textActive : guideTheme.textInactive, !isActive && "group-hover:text-gray-700")}>
+                      {item.title}
+                    </span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </div>
     </div>
@@ -143,7 +169,6 @@ export function AppSidebar() {
   }
 
   return (
-    // ✅ style 속성을 사용해 너비 260px 절대 사수 (min, max, width 모두 고정)
     <Sidebar 
       collapsible="none" 
       className="border-r bg-white/30 backdrop-blur-sm flex-none h-full"
@@ -159,18 +184,18 @@ export function AppSidebar() {
           /* 메뉴 화면 */
           <div className="flex flex-col h-full pt-8 px-3">
             <SidebarGroup className="flex-1 overflow-y-auto custom-scrollbar px-1 pb-4">
-              <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">
+              <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-4 mb-3">
                 {label}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="gap-2.5">
+                {/* ✅ gap-4로 간격 확대 */}
+                <SidebarMenu className="gap-4">
                   {items.map((item) => {
                     const isActive = pathname === item.url;
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild className={cn("h-14 rounded-2xl transition-all duration-300 border border-transparent font-medium group", isActive ? themeConfig.activeBg : themeConfig.hover, isActive ? "scale-[1.02]" : "hover:scale-[1.01]")}>
                           <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
-                            {/* ✅ 메뉴 아이콘 크기 고정 */}
                             <div 
                               className={cn("rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110", isActive ? themeConfig.iconActive : themeConfig.iconInactive)}
                               style={{ width: '40px', height: '40px', minWidth: '40px' }}
