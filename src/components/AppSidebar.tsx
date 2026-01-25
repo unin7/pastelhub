@@ -40,21 +40,21 @@ function HomeSidebarContent() {
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-3 custom-scrollbar">
         {members?.map((member, idx) => {
            const isLive = member.status.includes('live');
            return (
-             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 cursor-pointer group border ${ isLive ? 'bg-white shadow-md border-purple-100 hover:shadow-lg hover:border-purple-200' : 'border-transparent hover:bg-white/60 hover:border-gray-100' }`}>
-               <div className={`relative w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}>
+             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className={`flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-300 cursor-pointer group border ${ isLive ? 'bg-white shadow-md border-purple-100 hover:shadow-lg hover:border-purple-200' : 'border-transparent hover:bg-white/60 hover:border-gray-100' }`}>
+               <div className={`relative w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}>
                  <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border-2 border-white" />
-                 {isLive && <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>}
+                 {isLive && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>}
                </div>
                <div className="flex-1 min-w-0">
                  <div className="flex items-center justify-between">
-                   <span className={`text-base font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{member.name}</span>
-                   {isLive && <span className="text-[11px] font-extrabold text-red-500 bg-red-50 px-2 py-0.5 rounded-full animate-pulse tracking-tight">LIVE</span>}
+                   <span className={`text-sm font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{member.name}</span>
+                   {isLive && <span className="text-[10px] font-extrabold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse tracking-tight">LIVE</span>}
                  </div>
-                 <p className="text-sm text-gray-400 truncate mt-1 group-hover:text-gray-500 transition-colors">{isLive ? '방송 중입니다!' : member.title}</p>
+                 <p className="text-xs text-gray-400 truncate mt-1 group-hover:text-gray-500 transition-colors">{isLive ? '방송 중입니다!' : member.title}</p>
                </div>
              </a>
            );
@@ -74,26 +74,26 @@ function GuideSidebarContent() {
     <div className="h-full flex flex-col">
       <div className="px-4 py-6 sticky top-0 bg-white/50 backdrop-blur-sm z-10 border-b border-indigo-100/50 flex-none">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
           <input 
             type="text" 
             placeholder="가이드 검색..." 
-            className="w-full pl-11 pr-4 py-3 bg-white/80 border border-indigo-100 rounded-2xl text-base text-indigo-900 placeholder:text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all shadow-sm"
+            className="w-full pl-10 pr-3 py-3 bg-white/80 border border-indigo-100 rounded-2xl text-sm text-indigo-900 placeholder:text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all shadow-sm"
           />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3 py-4 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto px-2 py-4 custom-scrollbar">
         <SidebarGroupLabel className="px-4 text-xs font-bold text-indigo-400/80 mb-3">목차 (Table of Contents)</SidebarGroupLabel>
         <SidebarMenu className="gap-2">
           {guideSections.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild className="h-14 rounded-xl hover:bg-indigo-50/80 hover:text-indigo-600 text-gray-500 transition-all">
-                <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
-                  <div className="p-2 rounded-lg bg-indigo-50 text-indigo-400 group-hover:bg-white group-hover:shadow-sm transition-all">
-                    <item.icon className="size-5" />
+              <SidebarMenuButton asChild className="h-12 rounded-xl hover:bg-indigo-50/80 hover:text-indigo-600 text-gray-500 transition-all">
+                <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-3 px-3">
+                  <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-400 group-hover:bg-white group-hover:shadow-sm transition-all">
+                    <item.icon className="size-4" />
                   </div>
-                  <span className="font-medium text-base">{item.title}</span>
+                  <span className="font-medium text-sm">{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -137,8 +137,8 @@ export function AppSidebar() {
   }
 
   return (
-    // ✅ w-[280px]로 고정하고 min-w, max-w, flex-none으로 변경 방지
-    <Sidebar collapsible="none" className="border-r bg-white/30 backdrop-blur-sm w-[280px] min-w-[280px] max-w-[280px] flex-none h-full">
+    // ✅ 260px로 고정 (min, max, flex-none으로 변형 방지)
+    <Sidebar collapsible="none" className="border-r bg-white/30 backdrop-blur-sm w-[260px] min-w-[260px] max-w-[260px] flex-none h-full">
       <SidebarContent className="h-full p-0 overflow-hidden flex flex-col">
         
         {pathname === "/" ? (
