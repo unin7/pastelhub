@@ -45,14 +45,20 @@ function HomeSidebarContent() {
            const isLive = member.status.includes('live');
            return (
              <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className={`flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-300 cursor-pointer group border ${ isLive ? 'bg-white shadow-md border-purple-100 hover:shadow-lg hover:border-purple-200' : 'border-transparent hover:bg-white/60 hover:border-gray-100' }`}>
-               <div className={`relative w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}>
+               {/* ✅ 이미지 크기 강제 고정 (style 사용) */}
+               <div 
+                 className={`relative rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}
+                 style={{ width: '44px', height: '44px', minWidth: '44px' }} 
+               >
                  <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border-2 border-white" />
                  {isLive && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>}
                </div>
+               
+               {/* ✅ 텍스트 영역 (min-w-0으로 말줄임표 강제 적용) */}
                <div className="flex-1 min-w-0">
                  <div className="flex items-center justify-between">
                    <span className={`text-sm font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{member.name}</span>
-                   {isLive && <span className="text-[10px] font-extrabold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse tracking-tight">LIVE</span>}
+                   {isLive && <span className="text-[10px] font-extrabold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse tracking-tight flex-none ml-1">LIVE</span>}
                  </div>
                  <p className="text-xs text-gray-400 truncate mt-1 group-hover:text-gray-500 transition-colors">{isLive ? '방송 중입니다!' : member.title}</p>
                </div>
@@ -137,8 +143,12 @@ export function AppSidebar() {
   }
 
   return (
-    // ✅ 260px로 고정 (min, max, flex-none으로 변형 방지)
-    <Sidebar collapsible="none" className="border-r bg-white/30 backdrop-blur-sm w-[260px] min-w-[260px] max-w-[260px] flex-none h-full">
+    // ✅ style 속성을 사용해 너비 260px 절대 사수 (min, max, width 모두 고정)
+    <Sidebar 
+      collapsible="none" 
+      className="border-r bg-white/30 backdrop-blur-sm flex-none h-full"
+      style={{ width: '260px', minWidth: '260px', maxWidth: '260px' }}
+    >
       <SidebarContent className="h-full p-0 overflow-hidden flex flex-col">
         
         {pathname === "/" ? (
@@ -160,7 +170,11 @@ export function AppSidebar() {
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild className={cn("h-14 rounded-2xl transition-all duration-300 border border-transparent font-medium group", isActive ? themeConfig.activeBg : themeConfig.hover, isActive ? "scale-[1.02]" : "hover:scale-[1.01]")}>
                           <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
-                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110", isActive ? themeConfig.iconActive : themeConfig.iconInactive)}>
+                            {/* ✅ 메뉴 아이콘 크기 고정 */}
+                            <div 
+                              className={cn("rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110", isActive ? themeConfig.iconActive : themeConfig.iconInactive)}
+                              style={{ width: '40px', height: '40px', minWidth: '40px' }}
+                            >
                               <item.icon className="size-5" />
                             </div>
                             <span className={cn("text-base transition-colors", isActive ? themeConfig.textActive : themeConfig.textInactive, !isActive && "group-hover:text-gray-700")}>{item.title}</span>
