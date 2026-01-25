@@ -32,12 +32,15 @@ function HomeSidebarContent() {
   const { data: members } = useJsonData<LiveStatus[]>('status');
 
   return (
-    <div className="h-full px-4 py-6">
-      <div className="mb-5 px-2 flex items-center gap-2">
-         <Radio className="w-5 h-5 text-purple-600 animate-pulse" />
-         <p className="text-base font-bold text-purple-900/80 tracking-wide">LIVE STATION</p>
+    <div className="h-full flex flex-col">
+      <div className="px-5 pt-8 pb-4 flex-none">
+        <div className="flex items-center gap-2 px-1">
+           <Radio className="w-5 h-5 text-purple-600 animate-pulse" />
+           <p className="text-base font-bold text-purple-900/80 tracking-wide">LIVE STATION</p>
+        </div>
       </div>
-      <div className="space-y-3">
+      
+      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3 custom-scrollbar">
         {members?.map((member, idx) => {
            const isLive = member.status.includes('live');
            return (
@@ -69,8 +72,7 @@ function GuideSidebarContent() {
   
   return (
     <div className="h-full flex flex-col">
-      {/* 검색창 */}
-      <div className="px-5 py-6 sticky top-0 bg-white/50 backdrop-blur-sm z-10 border-b border-indigo-100/50">
+      <div className="px-4 py-6 sticky top-0 bg-white/50 backdrop-blur-sm z-10 border-b border-indigo-100/50 flex-none">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
           <input 
@@ -81,8 +83,7 @@ function GuideSidebarContent() {
         </div>
       </div>
 
-      {/* 목차 리스트 */}
-      <div className="flex-1 overflow-y-auto px-3 py-4">
+      <div className="flex-1 overflow-y-auto px-3 py-4 custom-scrollbar">
         <SidebarGroupLabel className="px-4 text-xs font-bold text-indigo-400/80 mb-3">목차 (Table of Contents)</SidebarGroupLabel>
         <SidebarMenu className="gap-2">
           {guideSections.map((item) => (
@@ -114,119 +115,64 @@ export function AppSidebar() {
   let items: any[] = [];
   let label = "";
   
-  // 섹션별 테마 설정
   let themeConfig = {
-    activeBg: "",
-    iconActive: "",
-    iconInactive: "",
-    textActive: "",
-    textInactive: "",
-    hover: ""
+    activeBg: "", iconActive: "", iconInactive: "", textActive: "", textInactive: "", hover: ""
   };
 
   if (pathname.startsWith("/news")) { 
     items = newsSections; label = "소식 (News)"; 
-    themeConfig = {
-      activeBg: "bg-white/90 border-blue-200 shadow-xl ring-1 ring-blue-100",
-      iconActive: "bg-gradient-to-br from-blue-400 to-cyan-400 shadow-blue-200 text-white",
-      iconInactive: "bg-white text-blue-300 group-hover:text-blue-400",
-      textActive: "text-blue-900",
-      textInactive: "text-gray-500",
-      hover: "hover:bg-white/80 hover:border-blue-100 hover:shadow-md"
-    };
+    themeConfig = { activeBg: "bg-white/90 border-blue-200 shadow-xl ring-1 ring-blue-100", iconActive: "bg-gradient-to-br from-blue-400 to-cyan-400 shadow-blue-200 text-white", iconInactive: "bg-white text-blue-300 group-hover:text-blue-400", textActive: "text-blue-900", textInactive: "text-gray-500", hover: "hover:bg-white/80 hover:border-blue-100 hover:shadow-md" };
   }
   else if (pathname.startsWith("/goods")) { 
     items = goodsSections; label = "굿즈 · 멤버십"; 
-    themeConfig = {
-      activeBg: "bg-white/90 border-purple-200 shadow-xl ring-1 ring-purple-100",
-      iconActive: "bg-gradient-to-br from-purple-400 to-violet-400 shadow-purple-200 text-white",
-      iconInactive: "bg-white text-purple-300 group-hover:text-purple-400",
-      textActive: "text-purple-900",
-      textInactive: "text-gray-500",
-      hover: "hover:bg-white/80 hover:border-purple-100 hover:shadow-md"
-    };
+    themeConfig = { activeBg: "bg-white/90 border-purple-200 shadow-xl ring-1 ring-purple-100", iconActive: "bg-gradient-to-br from-purple-400 to-violet-400 shadow-purple-200 text-white", iconInactive: "bg-white text-purple-300 group-hover:text-purple-400", textActive: "text-purple-900", textInactive: "text-gray-500", hover: "hover:bg-white/80 hover:border-purple-100 hover:shadow-md" };
   }
   else if (pathname.startsWith("/activities")) { 
     items = activitySections; label = "활동 (Activities)"; 
-    themeConfig = {
-      activeBg: "bg-white/90 border-pink-200 shadow-xl ring-1 ring-pink-100",
-      iconActive: "bg-gradient-to-br from-pink-400 to-rose-400 shadow-pink-200 text-white",
-      iconInactive: "bg-white text-pink-300 group-hover:text-pink-400",
-      textActive: "text-pink-900",
-      textInactive: "text-gray-500",
-      hover: "hover:bg-white/80 hover:border-pink-100 hover:shadow-md"
-    };
+    themeConfig = { activeBg: "bg-white/90 border-pink-200 shadow-xl ring-1 ring-pink-100", iconActive: "bg-gradient-to-br from-pink-400 to-rose-400 shadow-pink-200 text-white", iconInactive: "bg-white text-pink-300 group-hover:text-pink-400", textActive: "text-pink-900", textInactive: "text-gray-500", hover: "hover:bg-white/80 hover:border-pink-100 hover:shadow-md" };
   }
   else if (pathname.startsWith("/others")) { 
     items = otherSections; label = "기타 (Others)"; 
-    themeConfig = {
-      activeBg: "bg-white/90 border-emerald-200 shadow-xl ring-1 ring-emerald-100",
-      iconActive: "bg-gradient-to-br from-emerald-400 to-teal-400 shadow-emerald-200 text-white",
-      iconInactive: "bg-white text-emerald-300 group-hover:text-emerald-400",
-      textActive: "text-emerald-900",
-      textInactive: "text-gray-500",
-      hover: "hover:bg-white/80 hover:border-emerald-100 hover:shadow-md"
-    };
+    themeConfig = { activeBg: "bg-white/90 border-emerald-200 shadow-xl ring-1 ring-emerald-100", iconActive: "bg-gradient-to-br from-emerald-400 to-teal-400 shadow-emerald-200 text-white", iconInactive: "bg-white text-emerald-300 group-hover:text-emerald-400", textActive: "text-emerald-900", textInactive: "text-gray-500", hover: "hover:bg-white/80 hover:border-emerald-100 hover:shadow-md" };
   }
 
-  // ✅ w-80 (320px)으로 통일하여 중간 크기 확보
   return (
-    <Sidebar collapsible="none" className="border-r bg-white/30 backdrop-blur-sm w-80 h-full">
-      <SidebarContent className="px-3 pt-8">
+    // ✅ w-[280px]로 고정하고 min-w, max-w, flex-none으로 변경 방지
+    <Sidebar collapsible="none" className="border-r bg-white/30 backdrop-blur-sm w-[280px] min-w-[280px] max-w-[280px] flex-none h-full">
+      <SidebarContent className="h-full p-0 overflow-hidden flex flex-col">
         
-        {/* 1. 홈 화면 */}
         {pathname === "/" ? (
           <HomeSidebarContent />
         ) : pathname.startsWith("/guide") ? (
-          /* 2. 가이드 화면 */
           <GuideSidebarContent />
         ) : (
-          /* 3. 메뉴 화면 (소식/활동/굿즈/기타) */
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">
-              {label}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu className="gap-2.5">
-                {items.map((item) => {
-                  const isActive = pathname === item.url;
-                  
-                  return (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild 
-                        // ✅ h-14 (56px)로 버튼 크기 확대
-                        className={cn(
-                          "h-14 rounded-2xl transition-all duration-300 border border-transparent font-medium group",
-                          isActive ? themeConfig.activeBg : themeConfig.hover,
-                          isActive ? "scale-[1.02]" : "hover:scale-[1.01]"
-                        )}
-                      >
-                        <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
-                          {/* ✅ 아이콘 박스 크기 확대 (w-10 h-10) */}
-                          <div className={cn(
-                            "w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
-                            isActive ? themeConfig.iconActive : themeConfig.iconInactive
-                          )}>
-                            <item.icon className="size-5" /> {/* 아이콘 크기 확대 */}
-                          </div>
-                          
-                          {/* ✅ 텍스트 크기 확대 (text-base) */}
-                          <span className={cn(
-                            "text-base transition-colors",
-                            isActive ? themeConfig.textActive : themeConfig.textInactive,
-                            !isActive && "group-hover:text-gray-700"
-                          )}>
-                            {item.title}
-                          </span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          /* 메뉴 화면 */
+          <div className="flex flex-col h-full pt-8 px-3">
+            <SidebarGroup className="flex-1 overflow-y-auto custom-scrollbar px-1 pb-4">
+              <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">
+                {label}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-2.5">
+                  {items.map((item) => {
+                    const isActive = pathname === item.url;
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild className={cn("h-14 rounded-2xl transition-all duration-300 border border-transparent font-medium group", isActive ? themeConfig.activeBg : themeConfig.hover, isActive ? "scale-[1.02]" : "hover:scale-[1.01]")}>
+                          <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-4 px-4">
+                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110", isActive ? themeConfig.iconActive : themeConfig.iconInactive)}>
+                              <item.icon className="size-5" />
+                            </div>
+                            <span className={cn("text-base transition-colors", isActive ? themeConfig.textActive : themeConfig.textInactive, !isActive && "group-hover:text-gray-700")}>{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </div>
         )}
 
       </SidebarContent>
