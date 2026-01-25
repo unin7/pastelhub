@@ -1,6 +1,13 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
- * 공통 유틸리티 함수
+ * Tailwind CSS 클래스를 병합해주는 유틸리티 함수
+ * (clsx로 조건부 클래스를 처리하고, twMerge로 중복/충돌 클래스를 정리함)
  */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 /**
  * 날짜 포맷팅
@@ -80,13 +87,6 @@ export function getImageFallback(src: string, fallback?: string): string {
 }
 
 /**
- * 클래스명 병합 (조건부 클래스)
- */
-export function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(' ');
-}
-
-/**
  * 딥 클론 (간단한 버전)
  */
 export function deepClone<T>(obj: T): T {
@@ -129,16 +129,4 @@ export function throttle<T extends (...args: any[]) => any>(
       setTimeout(() => (inThrottle = false), limit);
     }
   };
-}
-
-
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-/**
- * Tailwind CSS 클래스를 병합해주는 유틸리티 함수
- * (clsx로 조건부 클래스를 처리하고, twMerge로 중복/충돌 클래스를 정리함)
- */
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
 }
