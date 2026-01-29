@@ -25,7 +25,10 @@ export function TopNavigation() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/40 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 h-16 flex-none">
-      <div className="w-full h-full px-6 flex items-center justify-between">
+      {/* 1. 부모 컨테이너에 relative 추가 */}
+      <div className="w-full h-full px-6 flex items-center justify-between relative">
+        
+        {/* 왼쪽: 로고 */}
         <Link to="/" className="group flex items-center gap-1.5 transition-opacity hover:opacity-80 min-w-max">
           <Sparkles className="h-5 w-5 text-indigo-300 transition-transform duration-500 group-hover:rotate-180" />
           <h1 className="font-extrabold text-2xl tracking-tight">
@@ -34,7 +37,8 @@ export function TopNavigation() {
           </h1>
         </Link>
 
-        <div className="hidden md:flex items-center gap-1 bg-white/40 px-2 py-1.5 rounded-full border border-white/50 shadow-sm backdrop-blur-sm">
+        {/* 2. 중앙: 메뉴 (absolute로 정중앙 배치) */}
+        <div className="hidden md:flex items-center gap-1 bg-white/40 px-2 py-1.5 rounded-full border border-white/50 shadow-sm backdrop-blur-sm absolute left-1/2 -translate-x-1/2">
           {menuItems.map((menu) => {
             const isActive = location.pathname.startsWith(menu.path);
             return (
@@ -46,6 +50,7 @@ export function TopNavigation() {
           })}
         </div>
 
+        {/* 우측: 인증 버튼 */}
         <div className="flex items-center gap-3 min-w-max justify-end">
           <AuthStatusButton status={getAuthStatusString()} onLogin={login} onVerify={verifyNaver} />
           <UserDashboardMenu status={getAuthStatusString()} onLogout={logout} />
