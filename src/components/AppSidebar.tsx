@@ -12,6 +12,7 @@ import {
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, 
   useSidebar 
 } from "./ui/sidebar";
+// ✅ 경로 수정됨 (lib/utils -> utils/common)
 import { cn } from "../utils/common";
 
 // ----------------------------------------------------------------------
@@ -53,13 +54,13 @@ const otherSections: SectionItem[] = [
   { title: "공지·의견", description: "통합 알림판", icon: Bell, url: "/others/notice" } 
 ];
 const guideSections = [ 
-  { title: '기본 활동', description: "", icon: BookOpen, url: '/guide/basic' }, 
-  { title: '굿즈/포카', description: "", icon: ShoppingBag, url: '/guide/goods' }, 
-  { title: '공연/티켓', description: "", icon: Ticket, url: '/guide/concert' }, 
-  { title: '서포트', description: "", icon: Heart, url: '/guide/support' }, 
-  { title: '창작 활동', description: "", icon: PenTool, url: '/guide/creation' }, 
-  { title: '커뮤니티', description: "", icon: Users, url: '/guide/community' }, 
-  { title: '신고/문의', description: "", icon: Siren, url: '/guide/report' } 
+  { title: '기본 활동', description: "입문자 필독", icon: BookOpen, url: '/guide/basic' }, 
+  { title: '굿즈/포카', description: "수집 가이드", icon: ShoppingBag, url: '/guide/goods' }, 
+  { title: '공연/티켓', description: "예매 꿀팁", icon: Ticket, url: '/guide/concert' }, 
+  { title: '서포트', description: "조공 절차", icon: Heart, url: '/guide/support' }, 
+  { title: '창작 활동', description: "2차 창작 규정", icon: PenTool, url: '/guide/creation' }, 
+  { title: '커뮤니티', description: "활동 규칙", icon: Users, url: '/guide/community' }, 
+  { title: '신고/문의', description: "고객센터", icon: Siren, url: '/guide/report' } 
 ];
 
 // ----------------------------------------------------------------------
@@ -143,7 +144,7 @@ function GuideSidebarContent() {
                 <SidebarMenuButton 
                   asChild 
                   className={cn(
-                    "h-12 rounded-xl transition-all duration-300 border border-transparent font-medium group",
+                    "h-auto py-3 rounded-xl transition-all duration-300 border border-transparent font-medium group items-start", // items-start
                     isActive ? guideTheme.activeBg : guideTheme.hover,
                     isActive ? "scale-[1.02]" : "hover:scale-[1.01]"
                   )}
@@ -151,16 +152,24 @@ function GuideSidebarContent() {
                   <Link to={item.url} onClick={() => setOpenMobile(false)} className="flex items-center gap-3 px-3 w-full">
                     <div 
                       className={cn(
-                        "rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                        "rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110 flex-shrink-0",
                         isActive ? guideTheme.iconActive : guideTheme.iconInactive
                       )}
                       style={{ width: '36px', height: '36px', minWidth: '36px' }}
                     >
                       <item.icon className="size-4" />
                     </div>
-                    <span className={cn("text-sm transition-colors", isActive ? guideTheme.textActive : guideTheme.textInactive, !isActive && "group-hover:text-gray-700")}>
-                      {item.title}
-                    </span>
+                    
+                    <div className="flex flex-col justify-center min-w-0">
+                      <span className={cn("text-sm font-semibold transition-colors leading-tight", isActive ? guideTheme.textActive : guideTheme.textInactive, !isActive && "group-hover:text-gray-700")}>
+                        {item.title}
+                      </span>
+                      {item.description && (
+                        <span className={cn("text-[11px] mt-0.5 truncate", isActive ? "opacity-80" : "text-gray-400 group-hover:text-gray-500")}>
+                          {item.description}
+                        </span>
+                      )}
+                    </div>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
