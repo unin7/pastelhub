@@ -66,8 +66,8 @@ const buttons: QuickButton[] = [
   },
   { 
     icon: <Sparkles className="w-5 h-5" />, 
-    label: '운세', 
-    path: '/others/fortune', 
+    label: '굿즈거래', 
+    path: '/others/goods', 
     hoverTheme: 'hover:bg-amber-50 hover:border-amber-200 hover:shadow-amber-100',
     iconTheme: 'text-amber-500'
   },

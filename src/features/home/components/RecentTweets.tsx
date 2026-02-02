@@ -22,20 +22,25 @@ const FALLBACK_FEEDS: FeedItem[] = [
   }
 ];
 
+// ✅ 화면에 표시할 최대 개수 상수 정의
+const MAX_DISPLAY_COUNT = 4;
+
 function RecentTweetsComponent() {
   const { data: serverFeeds, loading, error, refetch } = useJsonData<FeedItem[]>('1');
 
   const feeds = useMemo(() => {
-    return (serverFeeds && serverFeeds.length > 0) ? serverFeeds : FALLBACK_FEEDS;
+    const rawFeeds = (serverFeeds && serverFeeds.length > 0) ? serverFeeds : FALLBACK_FEEDS;
+    // ✅ 여기서 개수 제한 (최신순 4개)
+    return rawFeeds.slice(0, MAX_DISPLAY_COUNT);
   }, [serverFeeds]);
 
   // Loading 컴포넌트 사용
   if (loading) return <Loading />;
   
-  // 👇 [수정됨] 에러 메시지 처리 방식을 단순화 (타입 에러 해결)
+  // 에러 처리
   if (error) return (
     <ErrorState 
-      message={String(error)} // 에러가 객체든 문자열이든 안전하게 문자로 변환
+      message={String(error)} 
       onRetry={refetch} 
     />
   );
@@ -48,7 +53,7 @@ function RecentTweetsComponent() {
 
       <div className="space-y-4" role="feed" aria-label="최신 업데이트">
         {feeds.map((feed, idx) => (
-          // 👇 id가 있으면 쓰고, 없으면 인덱스(idx) 사용
+          // id가 있으면 쓰고, 없으면 인덱스(idx) 사용
           <article key={feed.id || idx} className="flex gap-3 items-start">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center flex-shrink-0 p-[2px]">
               <img src={feed.profileImg} alt={feed.name} className="w-full h-full rounded-full object-cover bg-white" />
