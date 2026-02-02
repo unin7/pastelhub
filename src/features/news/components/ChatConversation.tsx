@@ -21,11 +21,11 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
   const room = chatRooms?.find(r => r.roomId === roomId);
 
   return (
-    // ✅ flex-1: 남은 공간 채움
-    // ✅ min-w-0: 내부 콘텐츠가 길어져도 부모 영역을 뚫고 나가지 않게 함 (밀림 방지 핵심)
+    // ✅ h-full: 부모 높이(600px)만큼 꽉 채움
+    // ✅ min-h-0, min-w-0: 스크롤 밀림 방지
     <div className="flex-1 h-full flex flex-col bg-[#b2c7da] min-w-0 min-h-0">
       
-      {/* 헤더 (고정) */}
+      {/* 고정 헤더 */}
       <header className="bg-[#b2c7da]/95 backdrop-blur-sm px-4 py-3 flex justify-between items-center border-b border-black/5 flex-shrink-0 z-10">
         <div className="flex items-center gap-3 min-w-0">
           {room && (
@@ -53,7 +53,7 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
         </div>
       </header>
 
-      {/* 메시지 영역 (스크롤) */}
+      {/* ✅ 스크롤 영역 (메시지) */}
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1 custom-scrollbar">
         {loading ? (
           <div className="text-center text-gray-600 py-8 text-xs">로딩 중...</div>
@@ -70,23 +70,19 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
         )}
       </div>
 
-      {/* ✅ 입력창 (한 줄 배치 + 크기 축소) */}
+      {/* 고정 입력창 */}
       <div className="bg-white px-3 py-2 flex-shrink-0 border-t border-[#ebebeb]">
         <div className="flex items-center gap-2">
-            
-            {/* 아이콘들 (왼쪽) */}
             <div className="flex gap-2 shrink-0 text-gray-400">
                  <Paperclip size={20} className="cursor-pointer hover:text-gray-600" />
                  <Smile size={20} className="cursor-pointer hover:text-gray-600" />
             </div>
 
-            {/* 입력 필드 (가운데, 높이 줄임) */}
             <textarea 
                 className="flex-1 resize-none text-[13px] text-gray-800 placeholder-gray-300 focus:outline-none h-[36px] py-2 px-1 leading-normal"
                 placeholder="메시지를 입력하세요"
             />
 
-            {/* 전송 버튼 (오른쪽, 크기 줄임) */}
             <button className="bg-[#feec34] hover:bg-[#f5e11b] text-black text-[12px] px-3 py-1.5 rounded-[4px] font-medium transition-colors shrink-0">
                 전송
             </button>

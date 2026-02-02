@@ -68,15 +68,13 @@ export function TodoList() {
   if (error || !serverData) return <div className="p-10 text-center text-red-400">데이터를 불러올 수 없습니다.</div>;
 
   return (
-    // [최종 해결책]
-    // 1. flex-row: 가로 배치 명시
-    // 2. flex-nowrap: 공간이 부족해도 절대 줄바꿈 하지 않음 (핵심)
-    // 3. overflow-hidden: 자식 요소가 튀어나가는 것을 방지
+    // [레이아웃 고정]
+    // flex-nowrap: 줄바꿈 방지
+    // overflow-hidden: 내부 스크롤 제어
     <div className="flex flex-row flex-nowrap gap-4 h-full w-full min-h-[300px] overflow-hidden">
       
       {/* [왼쪽 영역] TODO 리스트 */}
       {/* flex-1: 남는 공간을 모두 차지 */}
-      {/* min-w-0: 중요! 내부 텍스트가 길어도 이 영역이 강제로 늘어나지 않고 줄어들 수 있게 함 */}
       <div className="flex-1 min-w-0 bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-purple-100/50 flex flex-col">
         
         {/* 헤더 */}
@@ -133,21 +131,22 @@ export function TodoList() {
       </div>
 
       {/* [오른쪽 영역] 진척도 & 보상 */}
-      {/* w-[40%]: 너비 40% 고정 */}
-      {/* shrink-0: 중요! 공간이 부족해도 절대 찌그러지지 않음 (고정 너비 유지) */}
-      <div className="w-[40%] shrink-0 flex flex-col gap-3 min-w-[200px]">
+      {/* ✅ 수정: w-[320px] 고정 너비 사용 (비율 흔들림 방지) */}
+      <div className="w-[320px] shrink-0 flex flex-col gap-3">
         
         {/* 1. 진척도 바 */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-purple-100/50 shadow-lg flex flex-col justify-center shrink-0">
           <div className="flex justify-between items-end mb-2">
-            <span className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{progressPercent}%</span>
+            {/* tabular-nums: 숫자 너비 고정 */}
+            <span className="text-xl md:text-2xl font-black text-gray-800 tracking-tight tabular-nums">{progressPercent}%</span>
             <span className="text-[9px] md:text-[10px] font-bold text-purple-500 bg-purple-50 px-1.5 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">
-               Progress
+                Progress
             </span>
           </div>
-          <div className="w-full h-2 md:h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+          {/* ✅ 수정: 높이 h-4로 확대, 배경색 bg-gray-200으로 진하게 */}
+          <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden shadow-inner border border-gray-100">
             <div 
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-700 ease-out shadow-[0_0_15px_rgba(168,85,247,0.5)]"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -170,7 +169,7 @@ export function TodoList() {
         </div>
 
         {/* 3. 퀵 액션 */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-2 shrink-0">
+        <div className="grid grid-cols-2 gap-2 shrink-0">
           {serverData.quickActions.map((btn) => (
             <a 
               key={btn.id}
