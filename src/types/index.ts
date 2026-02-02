@@ -1,3 +1,5 @@
+// src/types/index.ts
+
 // ============================================
 // User & Auth Types
 // ============================================
@@ -24,27 +26,66 @@ export const USER_LEVEL_INFO = {
 } as const;
 
 // ============================================
-// Chat Types
+// Chat Types (Updated)
 // ============================================
 export interface ChatRoom {
-  id: string;
-  name: string;
-  lastMessage: string;
-  time: string;
-  unread: number;
-  icon: string;
+  roomId: string;
+  roomName: string;
+  roomImg: string;
+  todayPostCount: number;
+  lastPost: string;
+  lastPostTime: string;
 }
 
 export interface ChatMessage {
+  type: 'TEXT' | 'IMAGE' | 'date' | 'file'; // 'date'는 날짜 구분선용
+  name: string;
+  profileImg: string;
+  content: string; // 텍스트 내용 또는 이미지 URL
+  time: string;
+}
+
+// ============================================
+// Sinmungo (Report) Types (New)
+// ============================================
+export type ReportCategory = 'bug' | 'user' | 'suggestion' | 'etc';
+export type ReportStatus = 'pending' | 'in_progress' | 'resolved' | 'rejected';
+
+export interface ReportItem {
   id: string;
-  type: 'text' | 'date' | 'file' | 'link';
-  sender?: string;
-  content?: string;
-  time?: string;
-  fileName?: string;
-  description?: string;
-  title?: string;
-  url?: string;
+  title: string;
+  content: string;
+  category: ReportCategory;
+  status: ReportStatus;
+  authorId: string;
+  authorName: string;
+  createdAt: string;
+  images?: string[];
+  answer?: string; // 관리자 답변
+}
+
+export interface SinmungoForm {
+  title: string;
+  content: string;
+  category: ReportCategory;
+  images?: File[];
+}
+
+// ============================================
+// Fan Game Types (Updated)
+// ============================================
+export interface FanGame {
+  id: string;
+  title: string;
+  creator: string;
+  shortDesc: string;
+  fullDesc: string;
+  thumbnailUrl: string;
+  gifUrl?: string;
+  imageUrls: string[];
+  downloadUrl: string;
+  time: string;
+  tags?: string[];
 }
 
 // ============================================
@@ -101,7 +142,6 @@ export interface FeedItem {
   time: string;
 }
 
-
 // ============================================
 // Schedule Types
 // ============================================
@@ -126,13 +166,14 @@ export interface ScheduleItem {
 // Goods Types
 // ============================================
 export interface GoodsItem {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
-  image: string;
-  link: string;
-  category: 'official' | 'personal' | 'collab';
-  status: 'available' | 'soldout' | 'upcoming';
+  imageUrl?: string; // image -> imageUrl로 통일 권장 (기존 호환성 위해 ? 처리)
+  image?: string;
+  link?: string;
+  category?: 'official' | 'personal' | 'collab';
+  status?: 'available' | 'soldout' | 'upcoming';
 }
 
 // ============================================
@@ -208,21 +249,6 @@ export interface Banner {
   imageUrl?: string; 
   subtitle?: string; 
   priority?: number; 
-}
-
-// ============================================
-// Fan Game Types
-// ============================================
-export interface FanGame {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  author: string;
-  category: string;
-  tags: string[];
-  time: string;
 }
 
 // ============================================
