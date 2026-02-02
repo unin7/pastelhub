@@ -41,9 +41,9 @@ const activitySections: SectionItem[] = [
   { title: "할 일 목록", description: "오늘의 숙제", icon: CheckSquare, url: "/activities/todo" }, 
   { title: "투표 · Hype", description: "화력 지원하기", icon: Trophy, url: "/activities/voting" }, 
   { title: "이벤트", description: "진행중 이벤트", icon: Calendar, url: "/activities/events" }, 
-  { title: "트렌딩 툴", description: "인기 급상승", icon: TrendingUp, url: "/activities/trending" }, 
+  { title: "실트", description: "원클릭 실트", icon: TrendingUp, url: "/activities/trending" }, 
   { title: "음원 스밍", description: "스트리밍 가이드", icon: Music, url: "/activities/streaming" }, 
-  { title: "YouTube Fix", description: "기능 복구 도구", icon: Wrench, url: "/activities/youtube-fix" } 
+  { title: "유튜브 정상화", description: "기능 복구 도구", icon: Wrench, url: "/activities/youtube-fix" } 
 ];
 const otherSections: SectionItem[] = [ 
   { title: "팬아트", description: "금손들의 작품", icon: Image, url: "/others/fanArt" }, 
@@ -57,7 +57,7 @@ const guideSections = [
   { title: '기본 활동', description: "입문자 필독", icon: BookOpen, url: '/guide/basic' }, 
   { title: '굿즈/포카', description: "수집 가이드", icon: ShoppingBag, url: '/guide/goods' }, 
   { title: '공연/티켓', description: "예매 꿀팁", icon: Ticket, url: '/guide/concert' }, 
-  { title: '서포트', description: "조공 절차", icon: Heart, url: '/guide/support' }, 
+  { title: '서포트', description: "2차 창작 가이드", icon: Heart, url: '/guide/support' }, 
   { title: '창작 활동', description: "2차 창작 규정", icon: PenTool, url: '/guide/creation' }, 
   { title: '커뮤니티', description: "활동 규칙", icon: Users, url: '/guide/community' }, 
   { title: '신고/문의', description: "고객센터", icon: Siren, url: '/guide/report' } 
