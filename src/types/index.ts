@@ -263,6 +263,30 @@ export interface KaraokeSong {
 }
 
 // ============================================
+// Goods Trade Types (New)
+// ============================================
+
+export interface TradeAuthor {
+  id: string;
+  name: string;
+  level: 'user' | 'cafe' | 'admin'; // 'cafe'는 카페 인증 회원
+}
+
+export interface TradeItem {
+  id: string;
+  status: 'active' | 'completed'; // 교환 중 | 교환 완료
+  region: string; // '서울', '경기' 등
+  isDeliveryAvailable: boolean; // 택배 거래 가능 여부
+  
+  haveItems: string[]; // 보유 중인 굿즈 (예: ['유니 아크릴', '시로 키링'])
+  wantItems: string[]; // 원하는 굿즈 (예: ['칸나 포카', '리제 아크릴'])
+  
+  author: TradeAuthor; // 작성자 정보
+  openChatLink: string; // 카카오톡 오픈채팅방 링크
+  createdAt: string; // 작성일 (ISO String)
+}
+
+// ============================================
 // Guide Types (Firestore Schema)
 // ============================================
 export interface GuideDocument {
