@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
 import { 
   Megaphone, Flame, CheckCircle2, ThumbsUp, PenTool, 
-  Loader2, MessageCircle, AlertCircle, ChevronRight 
+  Loader2, MessageCircle, AlertCircle
 } from 'lucide-react';
 import { useJsonData } from '../../../hooks/useJsonData';
 import { cn, formatDate } from '../../../utils/common';
-import { SinmungoItem, CATEGORY_CONFIG, SinmungoCategory } from '../types/sinmungo';
+// ✅ 변경된 타입 import
+import { ReportItem, ReportCategory, ReportStatus } from '../../../types/index';
+
+// ✅ UI 표시용 설정 (타입에 맞춰 재정의)
+const CATEGORY_CONFIG: Record<ReportCategory, { label: string; color: string }> = {
+  bug: { label: '버그 제보', color: 'text-red-600 bg-red-50 border-red-100' },
+  user: { label: '악성 유저', color: 'text-orange-600 bg-orange-50 border-orange-100' },
+  suggestion: { label: '개선 제안', color: 'text-blue-600 bg-blue-50 border-blue-100' },
+  etc: { label: '기타 문의', color: 'text-slate-600 bg-slate-50 border-slate-100' },
+};
+
+// ReportItem에 UI용 상태(agreeCount, targetCount, isVoted)가 없으므로 확장 타입 정의
+interface ExtendedReportItem extends ReportItem {
+  agreeCount: number; // 현재 공감 수 (임시)
+  targetCount: number; // 목표 공감 수 (임시)
+  isVoted?: boolean; // 내 투표 여부 (임시)
+}
 
 export function SinmungoPage() {
   // --- Data ---
-  const { data: initialData, isLoading } = useJsonData<SinmungoItem[]>('sinmungo');
+  // JSON 데이터가 ExtendedReportItem 형태라고 가정 (실제로는 서버에서 가져와야 함)
+  const { data: initialData, isLoading } = useJsonData<ExtendedReportItem[]>('sinmungo');
   
-  // 로컬 상태로 데이터 관리 (좋아요 클릭 즉시 반영을 위해)
-  const [items, setItems] = useState<SinmungoItem[]>([]);
+  // 로컬 상태로 데이터 관리
+  const [items, setItems] = useState<ExtendedReportItem[]>([]);
   const [activeTab, setActiveTab] = useState<'ongoing' | 'answered' | 'write'>('ongoing');
   
   // 초기 데이터 로드 시 로컬 상태 동기화
@@ -22,7 +39,7 @@ export function SinmungoPage() {
 
   // --- Form State ---
   const [formData, setFormData] = useState({
-    category: 'contents' as SinmungoCategory,
+    category: 'suggestion' as ReportCategory, // 기본값 변경
     title: '',
     content: ''
   });
@@ -35,14 +52,13 @@ export function SinmungoPage() {
   const handleAgree = (id: string) => {
     setItems(prev => prev.map(item => {
       if (item.id === id) {
-        // 이미 투표했으면 취소, 아니면 추가
         const isVoted = !!item.isVoted;
         const newCount = isVoted ? item.agreeCount - 1 : item.agreeCount + 1;
         
-        // 목표 달성 시 상태 변경 로직 (시뮬레이션)
-        let newStatus = item.status;
-        if (!isVoted && newCount >= item.targetCount && item.status === 'gathering') {
-          newStatus = 'agenda'; // 정식 안건으로 승격
+        let newStatus: ReportStatus = item.status;
+        // 50개 달성 시 'in_progress'로 변경 (기존 'agenda' 대신 타입에 맞는 값 사용)
+        if (!isVoted && newCount >= item.targetCount && item.status === 'pending') {
+          newStatus = 'in_progress'; 
         }
 
         return { ...item, agreeCount: newCount, isVoted: !isVoted, status: newStatus };
@@ -57,17 +73,19 @@ export function SinmungoPage() {
     setIsSubmitting(true);
     
     setTimeout(() => {
-      const newItem: SinmungoItem = {
+      const newItem: ExtendedReportItem = {
         id: Date.now().toString(),
-        userId: 'me',
+        authorId: 'me',
+        authorName: '나', // 추가된 필드
         category: formData.category,
         title: formData.title,
         content: formData.content,
-        agreeCount: 1, // 작성자는 자동 동의
+        status: 'pending', // 초기 상태
+        createdAt: new Date().toISOString(),
+        // UI용 추가 필드
+        agreeCount: 1,
         targetCount: 50,
         isVoted: true,
-        status: 'gathering',
-        createdAt: new Date().toISOString()
       };
 
       setItems([newItem, ...items]);
@@ -76,7 +94,7 @@ export function SinmungoPage() {
       
       setTimeout(() => {
         setShowSuccess(false);
-        setFormData({ category: 'contents', title: '', content: '' });
+        setFormData({ category: 'suggestion', title: '', content: '' });
         setActiveTab('ongoing');
       }, 1500);
     }, 1000);
@@ -84,15 +102,15 @@ export function SinmungoPage() {
 
   // --- Render Helpers ---
 
-  // 진행률 계산
   const getProgress = (current: number, target: number) => {
     return Math.min(100, Math.round((current / target) * 100));
   };
 
   if (isLoading) return <div className="flex h-64 items-center justify-center"><Loader2 className="animate-spin text-indigo-500" /></div>;
 
-  const ongoingList = items.filter(i => i.status !== 'answered');
-  const answeredList = items.filter(i => i.status === 'answered');
+  // status가 'resolved' 또는 'rejected'이면 답변 완료로 간주
+  const ongoingList = items.filter(i => i.status === 'pending' || i.status === 'in_progress');
+  const answeredList = items.filter(i => i.status === 'resolved' || i.status === 'rejected');
 
   return (
     <div className="max-w-3xl mx-auto p-4 md:p-6 space-y-6">
@@ -153,12 +171,13 @@ export function SinmungoPage() {
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
           {ongoingList.map((item) => {
             const progress = getProgress(item.agreeCount, item.targetCount);
-            const isAgenda = item.status === 'agenda';
+            // 'in_progress' 상태를 정식 안건 채택으로 간주
+            const isAgenda = item.status === 'in_progress';
 
             return (
               <div key={item.id} className={cn("bg-white p-5 rounded-2xl border shadow-sm transition-all", isAgenda ? "border-indigo-200 ring-1 ring-indigo-100" : "border-slate-100")}>
                 <div className="flex justify-between items-start mb-3">
-                  <span className={cn("px-2.5 py-1 rounded-lg text-xs font-bold", CATEGORY_CONFIG[item.category].color)}>
+                  <span className={cn("px-2.5 py-1 rounded-lg text-xs font-bold border", CATEGORY_CONFIG[item.category].color)}>
                     {CATEGORY_CONFIG[item.category].label}
                   </span>
                   <span className="text-xs text-slate-400">{formatDate(item.createdAt)}</span>
@@ -210,7 +229,14 @@ export function SinmungoPage() {
           {answeredList.map((item) => (
             <div key={item.id} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
               <div className="flex items-center gap-2 mb-3">
-                <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[11px] font-bold border border-green-200">답변완료</span>
+                <span className={cn(
+                  "px-2 py-0.5 rounded text-[11px] font-bold border",
+                  item.status === 'resolved' 
+                    ? "bg-green-100 text-green-700 border-green-200" 
+                    : "bg-slate-100 text-slate-700 border-slate-200"
+                )}>
+                  {item.status === 'resolved' ? '해결됨' : '반려됨'}
+                </span>
                 <span className="text-slate-300">|</span>
                 <span className={cn("text-xs font-medium", CATEGORY_CONFIG[item.category].color.split(' ')[0])}>
                   {CATEGORY_CONFIG[item.category].label}
@@ -226,7 +252,9 @@ export function SinmungoPage() {
                   </div>
                   <span className="text-xs font-bold text-indigo-900">운영팀 답변</span>
                 </div>
-                <p className="text-sm text-indigo-800 leading-relaxed">{item.answer}</p>
+                <p className="text-sm text-indigo-800 leading-relaxed">
+                  {item.answer || "답변 내용이 없습니다."}
+                </p>
               </div>
             </div>
           ))}
@@ -250,11 +278,11 @@ export function SinmungoPage() {
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">주제 선택</label>
               <div className="flex flex-wrap gap-2">
-                {Object.entries(CATEGORY_CONFIG).map(([key, config]) => (
+                {(Object.keys(CATEGORY_CONFIG) as ReportCategory[]).map((key) => (
                   <button
                     key={key}
                     type="button"
-                    onClick={() => setFormData({ ...formData, category: key as SinmungoCategory })}
+                    onClick={() => setFormData({ ...formData, category: key })}
                     className={cn(
                       "px-4 py-2 rounded-full text-sm font-medium border transition-all",
                       formData.category === key
@@ -262,7 +290,7 @@ export function SinmungoPage() {
                         : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
                     )}
                   >
-                    {config.label}
+                    {CATEGORY_CONFIG[key].label}
                   </button>
                 ))}
               </div>
