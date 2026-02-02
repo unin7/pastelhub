@@ -6,7 +6,7 @@ import { TradeItem } from '../../../types/index';
 
 const REGIONS = ['전체', '서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '강원', '경남', '경북', '전남', '전북', '충남', '충북', '제주', '전국'];
 
-export function GoodsTradePage() {
+export function GoodsTrade() {
   // --- Data Fetching ---
   // ✅ JSON이 배열 형태이므로 TradeItem[] 타입으로 바로 받습니다.
   const { data: trades, isLoading } = useJsonData<TradeItem[]>('goodstrade');
