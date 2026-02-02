@@ -1,37 +1,37 @@
 [
   {
     "id": "1",
-    "date": "2026-01-09T00:00:00Z",
-    "title": "JISOO Birthday",
-    "description": "Happy Birthday to JISOO! 🎂",
-    "type": "birthday"
+    "date": "2026-02-01T00:00:00Z",
+    "title": "일정",
+    "description": "일정",
+    "type": "event"
   },
   {
     "id": "2",
-    "date": "2026-01-15T09:00:00Z",
-    "title": "New Album Release",
-    "description": "새 미니앨범 발매! 많은 스트리밍 부탁드립니다.",
-    "type": "comeback"
+    "date": "2026-02-08T09:00:00Z",
+    "title": "~~ 200일",
+    "description": "~~ 200일 축하",
+    "type": "event"
   },
   {
     "id": "3",
-    "date": "2026-01-20T08:00:00Z",
-    "title": "Music Bank",
-    "description": "KBS Music Bank 컴백 무대",
+    "date": "2026-01-14T08:00:00Z",
+    "title": "3주년 축하 방송",
+    "description": "마크 합방",
     "type": "broadcast"
   },
   {
     "id": "4",
-    "date": "2026-01-25T10:00:00Z",
-    "title": "Fan Meeting",
-    "description": "서울 팬미팅 - 티켓팅 오픈",
-    "type": "concert"
+    "date": "2026-02-22T00:00:00Z",
+    "title": "시로 생일",
+    "description": "시로의 생일 축하! 🎂",
+    "type": "birthday"
   },
   {
     "id": "5",
-    "date": "2026-02-14T11:00:00Z",
-    "title": "Valentine Event",
-    "description": "멤버별 초콜릿 만들기 (KST 20:00)",
+    "date": "2026-02-28T11:00:00Z",
+    "title": "일정",
+    "description": "일정",
     "type": "event"
   }
 ]

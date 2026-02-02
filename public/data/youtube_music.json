@@ -1,29 +1,38 @@
 [
   {
     "id": "yt_m_01",
-    "title": "[Cover] 아카네 리제 - 주옥같다 (Original: 비비)",
-    "thumbnailUrl": "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=800",
-    "profileImg": "https://api.dicebear.com/7.x/adventurer/svg?seed=Lize",
-    "videoUrl": "https://www.youtube.com/watch?v=music1",
-    "name": "리제",
+    "title": "계절범죄 - Miiro(미로) | 시라유키 히나 Cover",
+    "thumbnailUrl": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/hq720%20(4).avif?alt=media&token=a358e63b-8402-4761-9b20-404dabb4081c",
+    "profileImg": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/image.jpg?alt=media&token=a8564830-124a-4061-8c9f-5a5d915e83c6",
+    "videoUrl": "https://www.youtube.com/watch?v=7idkUwtf-0I&list=RD7idkUwtf-0I&start_radio=1",
+    "name": "히나",
     "time": "2025-12-10T12:00:00Z"
   },
   {
     "id": "yt_m_02",
-    "title": "[Cover] 시라유키 히나 - 사랑비 (Original: 김태우)",
-    "thumbnailUrl": "https://images.unsplash.com/photo-1520690214124-2405c5217036?w=800",
-    "profileImg": "https://api.dicebear.com/7.x/adventurer/svg?seed=Hina",
-    "videoUrl": "https://www.youtube.com/watch?v=music2",
-    "name": "히나",
-    "time": "2025-12-15T19:00:00Z"
+    "title": "DAYBREAK FRONTLINE / 텐코 시부키(Tenko Shibuki) cover",
+    "thumbnailUrl": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/hq720%20(5).avif?alt=media&token=8622f025-e5af-47ae-832a-2e6389537f23",
+    "profileImg": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/%EC%85%80%EC%B9%B41.png?alt=media&token=4d278a02-6344-4ce7-8bb3-10505a51771f",
+    "videoUrl": "https://www.youtube.com/watch?v=I8hFyN32Ysk",
+    "name": "부키",
+    "time": "2025-12-10T12:00:00Z"
   },
   {
     "id": "yt_m_03",
-    "title": "[Original] 유니(Uni) - Universe (Official Audio)",
-    "thumbnailUrl": "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=800",
-    "profileImg": "https://api.dicebear.com/7.x/adventurer/svg?seed=Uni",
-    "videoUrl": "https://www.youtube.com/watch?v=music3",
-    "name": "유니",
+    "title": "セカイ(SEKAI) / 스텔라이브(StelLive) cover",
+    "thumbnailUrl": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202026-02-02%20112440.png?alt=media&token=6fb9caf4-9784-4b80-8592-08ca6fc6eaa7",
+    "profileImg": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/%EC%9C%A0%EB%8B%883.png?alt=media&token=65e362b8-9fa4-4ccf-806b-94fce80f0803",
+    "videoUrl": "https://www.youtube.com/watch?v=hGzklPRul4w&list=RDhGzklPRul4w&start_radio=1",
+    "name": "스텔라이브",
+    "time": "2025-12-15T19:00:00Z"
+  },
+  {
+    "id": "yt_m_04",
+    "title": "스텔라이브 (StelLive) Universe | Universe (cover)",
+    "thumbnailUrl": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202026-02-02%20112424.png?alt=media&token=dee40f78-86b2-4c16-a5b8-e5d6b28a5362",
+    "profileImg": "https://firebasestorage.googleapis.com/v0/b/pastelhub-1aefc.firebasestorage.app/o/%EC%9C%A0%EB%8B%883.png?alt=media&token=65e362b8-9fa4-4ccf-806b-94fce80f0803",
+    "videoUrl": "https://www.youtube.com/watch?v=CbuiRlGeA-g&list=RDCbuiRlGeA-g&start_radio=1",
+    "name": "유니버스",
     "time": "2025-11-20T12:00:00Z"
   }
 ]

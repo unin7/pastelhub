@@ -13,5 +13,65 @@
     ],
     "downloadUrl": "https://itch.io/stella/uni-macaron",
     "time": "2025-12-15T14:00:00Z"
+  },
+  {
+    "id": "2",
+    "title": "칸나의 비트 콘서트",
+    "creator": "리듬깎는노인",
+    "shortDesc": "칸나의 커버곡으로 즐기는 정통 리듬 게임",
+    "fullDesc": "칸나의 'Error', '식충식물' 등 주옥같은 커버곡들을 리듬 게임으로 즐겨보세요! 4키, 6키 모드를 지원하며 난이도별 채보가 준비되어 있습니다. 콤보를 달성하면 화려한 라이브 2D 연출이 등장합니다. 랭킹 시스템을 통해 전 세계 파스텔들과 점수 대결을 펼쳐보세요.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1514525253440-b393452e3383?w=800",
+    "gifUrl": "https://media.giphy.com/media/l41Yh18f5TbiWHE0o/giphy.gif",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600",
+      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600"
+    ],
+    "downloadUrl": "https://itch.io/stella/kanna-rhythm",
+    "time": "2026-01-10T09:30:00Z"
+  },
+  {
+    "id": "3",
+    "title": "리제와 잃어버린 왕관",
+    "creator": "픽셀장인",
+    "shortDesc": "왕녀님과 떠나는 레트로풍 도트 RPG",
+    "fullDesc": "어느 날 사라진 왕관을 찾기 위해 모험을 떠나는 리제! 귀여운 도트 그래픽으로 구현된 스텔라이브 월드를 탐험하세요. 피아노 연주로 퍼즐을 풀거나 검술로 몬스터를 물리칠 수 있습니다. 선택지에 따라 달라지는 3가지 멀티 엔딩이 당신을 기다립니다.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800",
+    "gifUrl": "https://media.giphy.com/media/26tn33ai009QSTXRm/giphy.gif",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600",
+      "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=600"
+    ],
+    "downloadUrl": "https://itch.io/stella/lize-rpg",
+    "time": "2026-01-22T18:00:00Z"
+  },
+  {
+    "id": "4",
+    "title": "시로의 잠입 대작전",
+    "creator": "냥냥펀치",
+    "shortDesc": "들키지 않고 간식을 훔쳐라! 스텔스 액션",
+    "fullDesc": "배고픈 고양이 마시로가 되어 냉장고 속 간식을 훔쳐야 합니다! 멤버들의 감시망을 피해 소리를 내지 않고 이동하세요. 상자 뒤에 숨거나, 빠른 스피드로 도망칠 수 있습니다. 스테이지 곳곳에 숨겨진 '황금 츄르'를 모으면 히든 코스튬이 해금됩니다.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800",
+    "gifUrl": "https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600",
+      "https://images.unsplash.com/photo-1495360019602-e05980bf549a?w=600"
+    ],
+    "downloadUrl": "https://itch.io/stella/shiro-stealth",
+    "time": "2026-02-01T11:15:00Z"
+  },
+  {
+    "id": "5",
+    "title": "히나의 에임 트레이너",
+    "creator": "FPS조아",
+    "shortDesc": "히나처럼 에임을 좋게 만들고 싶다면 도전하세요!",
+    "fullDesc": "게임 천재 히나의 특훈 프로그램이 공개되었습니다. 화면에 나타나는 타겟을 빠르게 클릭하여 점수를 획득하세요. 실제 FPS 게임 감도를 그대로 적용할 수 있으며, 히나의 응원(또는 매도) 보이스가 포함되어 있어 훈련의 효율을 높여줍니다.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800",
+    "gifUrl": "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600",
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600"
+    ],
+    "downloadUrl": "https://itch.io/stella/hina-aim",
+    "time": "2026-02-05T15:00:00Z"
   }
 ]
