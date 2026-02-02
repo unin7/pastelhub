@@ -3,8 +3,8 @@ import {
   Megaphone, Flame, CheckCircle2, ThumbsUp, PenTool, 
   Loader2, MessageCircle, AlertCircle, ChevronRight 
 } from 'lucide-react';
-import { useJsonData } from "../hooks/useJsonData";
-import { cn, formatDate } from '../utils/common';
+import { useJsonData } from '../../../hooks/useJsonData';
+import { cn, formatDate } from '../../../utils/common';
 import { SinmungoItem, CATEGORY_CONFIG, SinmungoCategory } from '../types/sinmungo';
 
 export function SinmungoPage() {
