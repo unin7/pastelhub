@@ -26,7 +26,7 @@ const FALLBACK_FEEDS: FeedItem[] = [
 const MAX_DISPLAY_COUNT = 4;
 
 function RecentTweetsComponent() {
-  const { data: serverFeeds, loading, error, refetch } = useJsonData<FeedItem[]>('1');
+  const { data: serverFeeds, loading, error, refetch } = useJsonData<FeedItem[]>('group_stellive_all');
 
   const feeds = useMemo(() => {
     const rawFeeds = (serverFeeds && serverFeeds.length > 0) ? serverFeeds : FALLBACK_FEEDS;
