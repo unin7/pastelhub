@@ -24,7 +24,6 @@ interface TradeItem {
 }
 
 export function GoodsTrade() {
-  // 데이터 로딩
   const { data: trades, isLoading } = useJsonData<TradeItem[]>('goodstrade');
 
   // --- State ---
@@ -40,18 +39,14 @@ export function GoodsTrade() {
     if (!trades || !Array.isArray(trades)) return [];
 
     return trades.filter((trade) => {
-      // 1. 거래완료 안보기
       if (hideCompleted && trade.status === 'completed') return false;
-      // 2. 택배만 보기
       if (deliveryOnly && !trade.isDeliveryAvailable) return false;
       
-      // 3. 지역 필터
       if (mainRegion !== '전체') {
         if (!trade.region.includes(mainRegion)) return false;
         if (subRegion && subRegion !== '전체' && !trade.region.includes(subRegion)) return false;
       }
 
-      // 4. 검색어 필터
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const searchTarget = [...trade.haveItems, ...trade.wantItems, trade.region];
@@ -61,12 +56,10 @@ export function GoodsTrade() {
     });
   }, [trades, searchQuery, mainRegion, subRegion, deliveryOnly, hideCompleted]);
 
-  // 지역 라벨 표시
   const currentRegionLabel = mainRegion === '전체' 
     ? '모든 지역' 
     : `${mainRegion}${subRegion && subRegion !== '전체' ? ` ${subRegion}` : ''}`;
 
-  // 지역 선택 핸들러
   const handleRegionSelect = (main: string, sub: string) => {
     setMainRegion(main);
     setSubRegion(sub);
@@ -83,7 +76,7 @@ export function GoodsTrade() {
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
       
-      {/* 1. 주의사항 (가장 위로 이동) */}
+      {/* 1. 주의사항 (최상단 이동) */}
       <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-start gap-3 text-sm text-orange-800 shadow-sm">
         <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed">
@@ -110,21 +103,20 @@ export function GoodsTrade() {
         
         {/* 검색창 */}
         <div className="relative flex-1 min-w-[200px]">
-          {/* 아이콘 위치 수정: left-4로 여유를 줌 */}
+          {/* 아이콘 위치 및 크기 조정 */}
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
           <input
             type="text"
             placeholder="굿즈 이름 검색 (예: 유니 아크릴)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            // 텍스트 겹침 방지: pl-12 (48px)로 패딩 확보
+            // 텍스트 겹침 방지: pl-12 (48px)
             className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-200 transition-all placeholder:text-slate-400 text-sm text-slate-700"
           />
         </div>
 
         {/* 필터 그룹 & 쓰기 버튼 */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* 지역 선택 버튼 */}
           <button
             onClick={() => setIsRegionModalOpen(true)}
             className={cn(
@@ -143,7 +135,6 @@ export function GoodsTrade() {
 
           <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block" />
 
-          {/* 택배 필터 */}
           <button
             onClick={() => setDeliveryOnly(!deliveryOnly)}
             className={cn(
@@ -156,7 +147,6 @@ export function GoodsTrade() {
             <Box className="w-4 h-4" /> 택배 가능
           </button>
 
-          {/* 거래중 필터 */}
           <button
             onClick={() => setHideCompleted(!hideCompleted)}
             className={cn(
@@ -171,7 +161,7 @@ export function GoodsTrade() {
 
           <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block" />
 
-          {/* ✅ 교환글 쓰기 버튼 (이곳으로 이동) */}
+          {/* ✅ 교환글 쓰기 버튼 (여기 배치) */}
           <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap">
             <ArrowRightLeft className="w-4 h-4" />
             <span className="hidden sm:inline">교환글 쓰기</span>
@@ -180,7 +170,7 @@ export function GoodsTrade() {
         </div>
       </div>
 
-      {/* --- 리스트 Grid --- */}
+      {/* 리스트 Grid (기존 유지) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredTrades.length > 0 ? (
           filteredTrades.map((trade) => (
@@ -224,7 +214,6 @@ export function GoodsTrade() {
 
               {/* 메인: HAVE <-> WANT */}
               <div className="flex-1 px-5 space-y-3">
-                {/* HAVE (파스텔 인디고) */}
                 <div className="bg-indigo-50/60 rounded-xl border border-indigo-100/60 p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-[10px] font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
@@ -240,14 +229,12 @@ export function GoodsTrade() {
                   </div>
                 </div>
 
-                {/* 화살표 */}
                 <div className="flex justify-center -my-1">
                   <div className="bg-slate-50 p-1.5 rounded-full border border-slate-100 text-slate-400 shadow-sm z-10">
                     <ArrowRightLeft className="w-3.5 h-3.5" />
                   </div>
                 </div>
 
-                {/* WANT (파스텔 핑크) */}
                 <div className="bg-pink-50/60 rounded-xl border border-pink-100/60 p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-[10px] font-bold text-pink-600 bg-pink-100 px-2 py-0.5 rounded-full">
@@ -284,7 +271,7 @@ export function GoodsTrade() {
                   className={cn(
                     "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm",
                     trade.status === 'active'
-                      ? "bg-[#FAE100] text-[#371D1E] hover:bg-[#FCE620]" // 카카오 색상
+                      ? "bg-[#FAE100] text-[#371D1E] hover:bg-[#FCE620]" 
                       : "bg-slate-100 text-slate-400 cursor-not-allowed"
                   )}
                   onClick={(e) => trade.status === 'completed' && e.preventDefault()}
@@ -308,7 +295,6 @@ export function GoodsTrade() {
         )}
       </div>
 
-      {/* ✅ 지역 선택 모달 */}
       <RegionSelector 
         isOpen={isRegionModalOpen}
         onClose={() => setIsRegionModalOpen(false)}
