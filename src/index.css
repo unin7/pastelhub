@@ -3201,6 +3201,36 @@
   .ring-1 { --tw-ring-width: 1px; }
 }
 
+@layer components {
+  /* 프로필 테두리 (Ring) 공통 스타일 */
+  .profile-ring-base {
+    @apply relative flex items-center justify-center flex-shrink-0 p-[2px] transition-transform group-hover:scale-105;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  /* 방송 중일 때 테두리 (그라데이션) */
+  .profile-ring-live {
+    @apply bg-gradient-to-br from-pink-400 to-purple-400 shadow-sm;
+  }
+
+  /* 방송 없을 때 테두리 (회색) */
+  .profile-ring-offline {
+    @apply bg-slate-200;
+  }
+
+  /* 프로필 이미지 공통 스타일 */
+  .profile-img-base {
+    @apply w-full h-full rounded-full object-cover bg-white border-2 border-white transition-all duration-300;
+  }
+
+  /* 방송 없을 때 이미지 효과 (흑백 + 투명도 -> 호버시 컬러) */
+  .profile-img-offline {
+    @apply grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100;
+  }
+}
+
 :root {
   --font-size: 16px;
   --background: #fff;

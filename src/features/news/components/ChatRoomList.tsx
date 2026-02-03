@@ -26,6 +26,11 @@ export function ChatRoomList({ onSelect, current }: ChatRoomListProps) {
     }
   };
 
+  const truncateText = (text: string | undefined, limit: number) => {
+    if (!text) return "대화 내용이 없습니다.";
+    return text.length > limit ? text.substring(0, limit) + "..." : text;
+  };
+
   if (loading) {
     return (
       <div className="w-[240px] h-full bg-white border-r border-gray-100 flex items-center justify-center shrink-0">
@@ -35,16 +40,13 @@ export function ChatRoomList({ onSelect, current }: ChatRoomListProps) {
   }
 
   return (
-    // ✅ h-full: 부모 높이(600px)만큼 꽉 채움
-    // ✅ min-h-0: 내부 스크롤이 정상 작동하기 위한 Flexbox 필수 속성
     <div className="w-[240px] h-full flex flex-col bg-white border-r border-[#ececec] min-h-0 shrink-0">
       
-      {/* 고정 헤더 */}
+      {/* 고정 헤더 (스크롤 안됨) */}
       <div className="px-4 py-3 border-b border-[#ececec] flex-shrink-0 bg-white z-10">
         <h2 className="font-bold text-gray-800 text-base">채팅</h2>
       </div>
 
-      {/* ✅ 스크롤 영역 (flex-1 overflow-y-auto) */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         {chatRooms?.map((room) => {
           const isSelected = current === room.roomId;
@@ -77,9 +79,8 @@ export function ChatRoomList({ onSelect, current }: ChatRoomListProps) {
                 </div>
                 
                 <div className="flex justify-between items-center">
-                  {/* 말줄임표(...) 처리 */}
                   <p className="text-[11px] text-gray-500 truncate pr-2">
-                    {room.lastPost || "대화 내용이 없습니다."}
+                    {truncateText(room.lastPost, 21)}
                   </p>
                   
                   {room.todayPostCount > 0 && (

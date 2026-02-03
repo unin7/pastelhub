@@ -8,7 +8,7 @@ export function AllTweets() {
   return (
     <div className="w-full h-[600px] bg-white rounded-xl shadow-sm border border-gray-200 flex overflow-hidden font-sans">
       <ChatRoomList current={roomId} onSelect={setRoomId} />
-      <ChatConversation roomId={roomId} />
+      <ChatConversation key={roomId} roomId={roomId} />
     </div>
   );
 }

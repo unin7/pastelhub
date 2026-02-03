@@ -6,17 +6,16 @@ import {
   Ticket, Disc, Store, Calculator, CheckSquare, Trophy, TrendingUp, 
   Wrench, BookOpen, Heart, PenTool, Users, Siren 
 } from "lucide-react";
-import { useJsonData } from "../hooks/useJsonData";
+import { useJsonData } from "../../../hooks/useJsonData"; 
 import { 
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, 
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, 
   useSidebar 
-} from "./ui/sidebar";
-// ✅ 경로 수정됨 (lib/utils -> utils/common)
-import { cn } from "../utils/common";
+} from "../../../components/ui/sidebar"; 
+import { cn } from "../../../utils/common"; 
 
 // ----------------------------------------------------------------------
-// 1. 데이터 정의 (설명 추가됨)
+// 1. 데이터 정의
 // ----------------------------------------------------------------------
 interface SectionItem { title: string; description: string; icon: any; url: string; }
 interface LiveStatus { name: string; status: string; title: string; profileImg: string; liveUrl: string; }
@@ -64,38 +63,103 @@ const guideSections = [
 ];
 
 // ----------------------------------------------------------------------
-// 2. 홈 화면 사이드바 (Live Status) - 세로 길이 축소
+// 2. 홈 화면 사이드바 (Live Status)
 // ----------------------------------------------------------------------
 function HomeSidebarContent() {
   const { data: members } = useJsonData<LiveStatus[]>('status');
 
   return (
     <div className="h-full flex flex-col">
-      {/* 간격 75% 수준으로 축소 (py-6 -> py-4, space-y-3 -> space-y-2) */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 custom-scrollbar">
+      {/* custom-scrollbar 제거됨 */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2">
         {members?.map((member, idx) => {
-           const isLive = member.status.includes('live');
-           return (
-             // py-3 -> py-2 로 세로 길이 축소
-             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer group border ${ isLive ? 'bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200' : 'border-transparent hover:bg-white/60 hover:border-gray-100' }`}>
-               {/* 이미지 크기 약간 축소 (44px -> 40px) */}
-               <div 
-                 className={`relative rounded-full flex items-center justify-center flex-shrink-0 p-[2px] transition-transform group-hover:scale-105 ${ isLive ? 'bg-gradient-to-br from-pink-400 to-purple-400' : 'bg-gray-100' }`}
-                 style={{ width: '40px', height: '40px', minWidth: '40px' }} 
-               >
-                 <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border-2 border-white" />
-                 {isLive && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full ring-1 ring-green-100"></span>}
-               </div>
-               
-               <div className="flex-1 min-w-0">
-                 <div className="flex items-center justify-between">
-                   <span className={`text-sm font-bold truncate ${isLive ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{member.name}</span>
-                   {isLive && <span className="text-[10px] font-extrabold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse tracking-tight flex-none ml-1">LIVE</span>}
-                 </div>
-                 <p className="text-xs text-gray-400 truncate mt-0.5 group-hover:text-gray-500 transition-colors">{isLive ? '방송 중입니다!' : member.title}</p>
-               </div>
-             </a>
-           );
+          const isLive = member.status.includes('live');
+          
+          // 플랫폼 구분
+          const isChzzk = member.liveUrl?.includes('chzzk') || member.status.includes('chzzk');
+          const isSpace = member.liveUrl?.includes('x.com') || member.liveUrl?.includes('twitter') || member.status.includes('space');
+
+          // 뱃지 스타일
+          let badgeInfo = { text: "LIVE", color: "text-red-500 bg-red-50 border-red-100" };
+          if (isLive) {
+            if (isChzzk) badgeInfo = { text: "CHZZK", color: "text-[#00FFA3] bg-[#003322] border-[#00FFA3]/20" };
+            else if (isSpace) badgeInfo = { text: "SPACE", color: "text-slate-100 bg-slate-800 border-slate-700" };
+          }
+
+          return (
+            <a 
+              key={idx} 
+              href={member.liveUrl} 
+              target="_blank" 
+              rel="noreferrer" 
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer group border",
+                isLive 
+                  ? "bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200" 
+                  : "border-transparent hover:bg-white/60 hover:border-gray-100 opacity-90 hover:opacity-100" 
+              )}
+            >
+              {/* 프로필 이미지 영역 */}
+              <div 
+                className={cn(
+                  "relative rounded-full flex items-center justify-center flex-shrink-0 p-[2px] transition-transform group-hover:scale-105",
+                  // 방송 중: 그라데이션 / 방송 안 함: 회색 배경
+                  isLive 
+                    ? "bg-gradient-to-br from-pink-400 to-purple-400 shadow-sm" 
+                    : "bg-slate-200" 
+                )}
+                style={{ width: '40px', height: '40px', minWidth: '40px' }} 
+              >
+                <img 
+                  src={member.profileImg} 
+                  alt={member.name} 
+                  className={cn(
+                    "w-full h-full rounded-full object-cover bg-white border-2 border-white transition-all duration-300",
+                    // ✅ 핵심: 방송 중이 아니면 흑백(grayscale) + 투명도(opacity) 적용
+                    !isLive && "grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100"
+                  )} 
+                />
+                
+                {/* 라이브 상태 점 */}
+                {isLive && (
+                  <span className={cn(
+                    "absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-white rounded-full ring-1",
+                    isChzzk ? "bg-[#00FFA3] ring-[#00FFA3]/30" : 
+                    isSpace ? "bg-slate-800 ring-slate-200" : 
+                    "bg-red-500 ring-red-100"
+                  )}></span>
+                )}
+              </div>
+              
+              {/* 텍스트 정보 */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <span className={cn(
+                    "text-sm font-bold truncate transition-colors",
+                    isLive ? "text-gray-900" : "text-gray-500 group-hover:text-gray-700"
+                  )}>
+                    {member.name}
+                  </span>
+                  
+                  {/* 플랫폼 뱃지 */}
+                  {isLive && (
+                    <span className={cn(
+                      "text-[9px] font-extrabold px-1.5 py-0.5 rounded-[4px] border tracking-tight flex-none ml-1 animate-pulse",
+                      badgeInfo.color
+                    )}>
+                      {badgeInfo.text}
+                    </span>
+                  )}
+                </div>
+                <p className={cn(
+                  "text-xs truncate mt-0.5 transition-colors",
+                  isLive ? "text-gray-500 font-medium" : "text-gray-300 group-hover:text-gray-400"
+                )}>
+                  {isLive ? (isSpace ? '스페이스 청취 중 🎙️' : '방송 중입니다! 📺') : member.title}
+                </p>
+              </div>
+            </a>
+          );
         })}
       </div>
     </div>
@@ -103,7 +167,7 @@ function HomeSidebarContent() {
 }
 
 // ----------------------------------------------------------------------
-// 3. 가이드 화면 사이드바 (검색 + 목차)
+// 3. 가이드 화면 사이드바
 // ----------------------------------------------------------------------
 function GuideSidebarContent() {
   const { setOpenMobile } = useSidebar();
@@ -121,7 +185,6 @@ function GuideSidebarContent() {
   
   return (
     <div className="h-full flex flex-col">
-      {/* 상단 여백 축소 (py-6 -> py-4) */}
       <div className="px-4 py-4 sticky top-0 bg-white/50 backdrop-blur-sm z-10 border-b border-indigo-100/50 flex-none">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 pointer-events-none" />
@@ -133,9 +196,9 @@ function GuideSidebarContent() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 py-3 custom-scrollbar">
+      {/* custom-scrollbar 제거됨 */}
+      <div className="flex-1 overflow-y-auto px-2 py-3">
         <SidebarGroupLabel className="px-4 text-xs font-bold text-indigo-400/80 mb-2">목차 (Table of Contents)</SidebarGroupLabel>
-        {/* gap-4 -> gap-3 으로 축소 */}
         <SidebarMenu className="gap-3">
           {guideSections.map((item) => {
             const isActive = pathname === item.url;
@@ -144,7 +207,7 @@ function GuideSidebarContent() {
                 <SidebarMenuButton 
                   asChild 
                   className={cn(
-                    "h-auto py-3 rounded-xl transition-all duration-300 border border-transparent font-medium group items-start", // items-start
+                    "h-auto py-3 rounded-xl transition-all duration-300 border border-transparent font-medium group items-start",
                     isActive ? guideTheme.activeBg : guideTheme.hover,
                     isActive ? "scale-[1.02]" : "hover:scale-[1.01]"
                   )}
@@ -226,14 +289,13 @@ export function AppSidebar() {
         ) : pathname.startsWith("/guide") ? (
           <GuideSidebarContent />
         ) : (
-          /* 메뉴 화면 */
-          <div className="flex flex-col h-full pt-6 px-3"> {/* pt-8 -> pt-6 축소 */}
-            <SidebarGroup className="flex-1 overflow-y-auto custom-scrollbar px-1 pb-4">
+          <div className="flex flex-col h-full pt-6 px-3">
+            {/* custom-scrollbar 제거됨 */}
+            <SidebarGroup className="flex-1 overflow-y-auto px-1 pb-4">
               <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">
                 {label}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                {/* ✅ gap-4 -> gap-3 축소 (75%) */}
                 <SidebarMenu className="gap-3">
                   {items.map((item) => {
                     const isActive = pathname === item.url;
@@ -241,9 +303,8 @@ export function AppSidebar() {
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton 
                           asChild 
-                          // ✅ 버튼 높이 자동 조절 (h-auto) + 상하 패딩 추가 (py-3) -> 세로 길이 늘어남
                           className={cn(
-                            "h-auto py-3 rounded-2xl transition-all duration-300 border border-transparent font-medium group items-start", // items-start로 텍스트 정렬
+                            "h-auto py-3 rounded-2xl transition-all duration-300 border border-transparent font-medium group items-start",
                             isActive ? themeConfig.activeBg : themeConfig.hover,
                             isActive ? "scale-[1.02]" : "hover:scale-[1.01]"
                           )}
@@ -259,7 +320,6 @@ export function AppSidebar() {
                               <item.icon className="size-5" />
                             </div>
                             
-                            {/* ✅ 설명 텍스트 추가 */}
                             <div className="flex flex-col justify-center min-w-0">
                               <span className={cn("text-sm font-semibold transition-colors leading-tight", isActive ? themeConfig.textActive : themeConfig.textInactive, !isActive && "group-hover:text-gray-700")}>
                                 {item.title}
