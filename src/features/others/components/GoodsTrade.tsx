@@ -6,7 +6,7 @@ import {
 import { useJsonData } from "../../../hooks/useJsonData"; 
 import { cn, formatDate } from '../../../utils/common';
 // ✅ 빌드 에러 방지를 위해 파일명 소문자 확인
-import { RegionSelector } from './region-selector';
+import { RegionSelector } from './RegionSelector';
 
 // 타입 정의
 interface TradeItem {
