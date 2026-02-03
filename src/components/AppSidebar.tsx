@@ -6,7 +6,7 @@ import {
   Ticket, Disc, Store, Calculator, CheckSquare, Trophy, TrendingUp, 
   Wrench, BookOpen, Heart, PenTool, Users, Siren 
 } from "lucide-react";
-import { useJsonData } from "../../../hooks/useJsonData"; 
+import { useJsonData } from "../hooks/useJsonData"; 
 import { 
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, 
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, 
