@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, X, ChevronRight, Check } from "lucide-react";
+// ✅ 경로가 맞는지 확인해주세요
 import { cn } from "../../../utils/common";
 
 export const REGION_DATA: Record<string, string[]> = {
@@ -42,22 +43,20 @@ export function RegionSelector({
   if (!isOpen) return null;
 
   return (
-    // 배경: 화면 전체를 덮는 반투명 검정색 + z-index 최상위
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
-      {/* ✅ 모달 박스 수정:
-        - max-w-[540px]: 너비가 너무 넓어지지 않도록 고정 (V0 스타일)
-        - h-[500px]: 높이도 고정하여 내용물에 따라 늘어나거나 줄어들지 않게 함
-        - bg-white: 배경색 흰색 고정
+      {/* ✅ [핵심 수정] style 속성으로 너비/높이를 강제 고정 
+        Tailwind 클래스가 무시되더라도 이 설정은 무조건 적용됩니다.
       */}
       <div
-        className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-[540px] h-[500px] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+        className="bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+        style={{ width: '600px', height: '500px', maxWidth: '90vw', maxHeight: '85vh' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 1. 헤더 */}
-        <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0 h-[68px]">
+        <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
           <h3 className="font-bold text-slate-800 flex items-center gap-2.5 text-lg">
             <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500">
               <MapPin className="w-5 h-5" />
@@ -72,12 +71,15 @@ export function RegionSelector({
           </button>
         </div>
 
-        {/* 2. 컨텐츠 (2단 레이아웃) - 남은 높이 모두 차지 (flex-1) */}
-        <div className="flex-1 flex overflow-hidden bg-white">
+        {/* 2. 컨텐츠 (2단 레이아웃) */}
+        <div className="flex-1 flex overflow-hidden bg-white min-h-0">
           
           {/* [왼쪽] 시/도 선택 */}
-          {/* ✅ w-[140px] 고정, shrink-0으로 찌그러짐 방지 */}
-          <div className="w-[140px] bg-slate-50/50 border-r border-slate-100 overflow-y-auto shrink-0 custom-scrollbar">
+          {/* style width로 너비 고정 */}
+          <div 
+            className="bg-slate-50 border-r border-slate-100 overflow-y-auto shrink-0 custom-scrollbar"
+            style={{ width: '150px' }}
+          >
             {MAIN_REGIONS.map((region) => (
               <button
                 key={region}
@@ -107,7 +109,6 @@ export function RegionSelector({
           <div className="flex-1 bg-white overflow-y-auto p-5 custom-scrollbar">
             {tempMain !== "전체" ? (
               <div className="grid grid-cols-2 gap-2.5">
-                {/* '전체' 버튼 */}
                 <button
                   onClick={() => setTempSub("전체")}
                   className={cn(
@@ -121,7 +122,6 @@ export function RegionSelector({
                   전체
                 </button>
                 
-                {/* 나머지 지역 버튼들 */}
                 {REGION_DATA[tempMain]?.map(
                   (sub) =>
                     sub !== "전체" && (
@@ -142,7 +142,6 @@ export function RegionSelector({
                 )}
               </div>
             ) : (
-              // 선택 전 안내 화면
               <div className="h-full flex flex-col items-center justify-center text-slate-400 text-sm gap-3 opacity-60">
                 <div className="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
                   <MapPin className="w-7 h-7 text-slate-300" />
@@ -154,7 +153,7 @@ export function RegionSelector({
         </div>
 
         {/* 3. 푸터 */}
-        <div className="px-5 py-4 border-t border-slate-100 flex justify-between items-center bg-white shrink-0 h-[72px]">
+        <div className="px-5 py-4 border-t border-slate-100 flex justify-between items-center bg-white shrink-0">
           <div className="text-sm text-slate-500">
             선택된 지역:{" "}
             <span className="font-bold text-indigo-600 ml-1">
