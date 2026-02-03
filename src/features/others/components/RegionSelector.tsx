@@ -44,10 +44,11 @@ export function RegionSelector({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      // ✅ [핵심 수정] z-index를 스타일로 강제 적용하여 배경 아이콘보다 무조건 위에 오도록 함
+      style={{ zIndex: 99999 }}
       onClick={onClose}
     >
-      {/* 레이아웃 고정 */}
       <div
         className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
         style={{ width: '640px', height: '520px', maxWidth: '95vw', maxHeight: '90vh' }}
@@ -57,8 +58,7 @@ export function RegionSelector({
         <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
           <h3 className="font-bold text-slate-800 flex items-center gap-2 text-lg">
             <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500">
-              {/* ✅ 헤더 아이콘 크기 살짝 축소 (w-5 -> w-4.5) */}
-              <MapPin className="w-4.5 h-4.5" />
+              <MapPin className="w-4 h-4" />
             </div>
             지역 선택
           </h3>
@@ -110,7 +110,6 @@ export function RegionSelector({
                 {/* 1. 전체 버튼 */}
                 <button
                   onClick={() => setTempSub("전체")}
-                  // ✅ 수정: scale 효과 제거, 그림자와 테두리 유지
                   className={cn(
                     "py-3 px-2 rounded-xl text-sm border text-center transition-all flex items-center justify-center gap-1.5",
                     tempSub === "전체" || tempSub === ""
@@ -129,7 +128,6 @@ export function RegionSelector({
                       <button
                         key={sub}
                         onClick={() => setTempSub(sub)}
-                        // ✅ 수정: scale 효과 제거
                         className={cn(
                           "py-3 px-2 rounded-xl text-sm border text-center transition-all flex items-center justify-center gap-1.5",
                           tempSub === sub
@@ -157,7 +155,7 @@ export function RegionSelector({
           </div>
         </div>
 
-        {/* 3. 푸터 */}
+        {/* 3. 푸터 (버튼 스타일 수정) */}
         <div className="px-6 py-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
           <div className="text-sm text-slate-600">
             선택된 지역:{" "}
@@ -166,13 +164,17 @@ export function RegionSelector({
               {tempSub && tempSub !== "전체" ? ` ${tempSub}` : ""}
             </span>
           </div>
+          {/* ✅ [수정] 버튼 스타일: 
+              - w-[140px]: 너비 고정 (더 길게)
+              - rounded-lg: 덜 둥글게 (네모난 느낌) 
+          */}
           <button
             onClick={() => {
               onSelect(tempMain, tempSub || "전체");
               onClose();
             }}
             disabled={!tempMain}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white w-[140px] py-3 rounded-lg text-sm font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
           >
             선택 완료
           </button>
