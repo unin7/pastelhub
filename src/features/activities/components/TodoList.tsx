@@ -55,7 +55,7 @@ export function TodoList() {
   const completedCount = todos.filter((t) => t.completed).length;
   const progressPercent = todos.length > 0 ? Math.round((completedCount / todos.length) * 100) : 0;
   
-  // 블러 효과: 진행도에 따라 이미지 선명해짐
+  // 블러 효과: 0%일 때 10px, 100%일 때 0px
   const blurValue = Math.max(0, 10 - (progressPercent / 10));
 
   const getIcon = (type: string) => {
@@ -72,6 +72,7 @@ export function TodoList() {
   if (error || !serverData) return <div className="p-10 text-center text-red-400">데이터를 불러올 수 없습니다.</div>;
 
   return (
+    // [레이아웃] 전체 높이 사용, 좌우 배치
     <div className="flex flex-row flex-nowrap gap-5 h-full w-full min-h-[300px] overflow-hidden">
       
       {/* [왼쪽] TODO 리스트 */}
@@ -96,12 +97,13 @@ export function TodoList() {
               onClick={() => toggleTodo(todo.id)}
               className="flex items-center gap-3 p-3 bg-white/80 rounded-xl hover:bg-white transition-all border border-purple-100/30 cursor-pointer group active:scale-[0.99]"
             >
-              {/* 커스텀 체크박스 */}
-              <div className={`w-4 h-4 rounded-md border-2 flex items-center justify-center transition-colors shrink-0 ${
-                todo.completed ? 'bg-purple-500 border-purple-500' : 'border-purple-300 bg-white'
-              }`}>
-                {todo.completed && <div className="w-2 h-2 bg-white rounded-sm" />}
-              </div>
+              {/* ✅ 요청하신 네모난 체크박스 스타일 적용 */}
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                readOnly
+                className="w-4 h-4 rounded md:rounded-md border-2 border-purple-300 text-purple-500 focus:ring-0 pointer-events-none shrink-0"
+              />
               
               <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
                 <span className={`text-sm truncate transition-colors ${
@@ -130,8 +132,8 @@ export function TodoList() {
         </div>
       </div>
 
-      {/* [오른쪽] 진척도 & 보상 & 바로가기 */}
-      {/* ✅ [수정] 너비를 380px로 늘려서 왼쪽 리스트와의 비율 균형을 맞춤 */}
+      {/* [오른쪽] 진척도 & 보상 & 퀵 액션 */}
+      {/* ✅ 비율 수정: 너비를 380px로 늘려서 왼쪽과의 균형을 맞춤 */}
       <div className="w-[380px] shrink-0 flex flex-col gap-3">
         
         {/* 1. 진척도 바 */}
@@ -145,14 +147,11 @@ export function TodoList() {
             </span>
           </div>
           
-          {/* ✅ [수정] 진행도 바 색상 강제 적용 */}
+          {/* ✅ 잘 나온다고 하신 진행도 바 스타일 적용 */}
           <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden relative">
             <div 
-              className="h-full rounded-full transition-all duration-500 ease-out"
-              style={{ 
-                width: `${Math.max(progressPercent, 5)}%`, 
-                background: 'linear-gradient(90deg, #a855f7 0%, #ec4899 100%)' 
-              }}
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-700 ease-out shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
         </div>
@@ -173,7 +172,7 @@ export function TodoList() {
           </div>
         </div>
 
-        {/* 3. 퀵 액션 (바로가기 버튼 복구) */}
+        {/* 3. ✅ 퀵 액션 (바로가기 버튼) 복구 */}
         <div className="grid grid-cols-2 gap-2 shrink-0">
           {serverData.quickActions.map((btn) => (
             <a 
