@@ -90,7 +90,7 @@ function HomeSidebarContent() {
            
            // ✅ 3. 링 색상 설정 (style로 직접 주입하여 확실하게 적용)
            const ringStyle = isXSpace 
-             ? { background: 'linear-gradient(to bottom right, #3b82f6, #06b6d4)' } // X: 블루/시안 그라데이션
+             ? { background: 'linear-gradient(to bottom right, #ec4899, #a855f7)' } // X: 핑크/퍼플 그라데이션
              : { background: 'linear-gradient(to bottom right, #00ffa3, #00c7a9)' }; // 치지직: 민트/초록
 
            return (
