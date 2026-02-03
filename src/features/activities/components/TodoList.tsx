@@ -41,10 +41,9 @@ export function TodoList() {
   };
 
   const completedCount = todos.filter((t) => t.completed).length;
-  // 0%일 때도 계산 에러 방지
   const progressPercent = todos.length > 0 ? Math.round((completedCount / todos.length) * 100) : 0;
   
-  // 블러 효과: 0%일 때 10px, 100%일 때 0px
+  // 블러 효과 계산
   const blurValue = Math.max(0, 10 - (progressPercent / 10));
 
   if (loading) return <div className="p-10 text-center text-gray-500">로딩 중...</div>;
@@ -53,7 +52,8 @@ export function TodoList() {
   return (
     <div className="flex flex-row flex-nowrap gap-4 h-full w-full min-h-[300px] overflow-hidden">
       
-      {/* [왼쪽] TODO 리스트 (너비 자동 확장) */}
+      {/* [왼쪽] TODO 리스트 */}
+      {/* flex-1: 남은 공간 차지 (오른쪽이 넓어지면 자연스럽게 좁아짐) */}
       <div className="flex-1 min-w-0 bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-purple-100/50 flex flex-col">
         
         {/* 헤더 */}
@@ -75,7 +75,7 @@ export function TodoList() {
               onClick={() => toggleTodo(todo.id)}
               className="flex items-center gap-2 p-2.5 bg-white/80 rounded-xl hover:bg-white transition-all border border-purple-100/30 cursor-pointer group active:scale-[0.99]"
             >
-              {/* 체크박스 커스텀 디자인 */}
+              {/* 체크박스 */}
               <div className={`w-4 h-4 rounded-md border-2 flex items-center justify-center transition-colors shrink-0 ${
                 todo.completed ? 'bg-purple-500 border-purple-500' : 'border-purple-300 bg-white'
               }`}>
@@ -110,43 +110,48 @@ export function TodoList() {
       </div>
 
       {/* [오른쪽] 진척도 & 보상 이미지 */}
-      {/* ✅ [수정] 너비를 320px -> 260px로 줄여서 비율 개선 */}
-      <div className="w-[260px] shrink-0 flex flex-col gap-3">
+      {/* ✅ [수정] 너비를 340px로 늘려서 왼쪽 리스트 비율을 줄임 */}
+      <div className="w-[340px] shrink-0 flex flex-col gap-3">
         
-        {/* 1. 진척도 바 카드 */}
+        {/* 1. 진척도 바 */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-purple-100/50 shadow-lg flex flex-col justify-center shrink-0">
           <div className="flex justify-between items-end mb-2">
             <span className="text-xl font-black text-gray-800 tracking-tight tabular-nums">
               {progressPercent}%
             </span>
-            <span className="text-[10px] font-bold text-purple-500 bg-purple-50 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full">
                 Progress
             </span>
           </div>
           
-          {/* ✅ [수정] 진행도 바 시각적 개선 */}
+          {/* ✅ [수정] 진행도 바 색상 강제 적용 (CSS 이슈 해결) */}
           <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden relative">
             <div 
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${progressPercent}%` }}
+              className="h-full rounded-full transition-all duration-500 ease-out"
+              style={{ 
+                // 최소 5%는 차오르게 해서 시각적으로 보이게 함
+                width: `${Math.max(progressPercent, 5)}%`, 
+                // Tailwind 클래스 대신 직접 그라데이션 적용
+                background: 'linear-gradient(90deg, #a855f7 0%, #ec4899 100%)' 
+              }}
             />
           </div>
         </div>
 
         {/* 2. 보상 이미지 */}
-        {/* ✅ [수정] flex-1 대신 h-full을 쓰되, 부모 높이에 맞게 꽉 차게 변경 */}
-        <div className="relative flex-1 rounded-2xl overflow-hidden border border-purple-100/50 shadow-lg bg-gray-100 group">
+        {/* ✅ [수정] h-full로 채우되, 이미지가 너무 길어지지 않게 aspect 비율이나 object-cover 조절 */}
+        <div className="relative h-full rounded-2xl overflow-hidden border border-purple-100/50 shadow-lg bg-gray-100 group">
           <img 
             src={serverData.rewardImage.url} 
             alt="Reward"
             style={{ filter: `blur(${blurValue}px)` }}
             className="w-full h-full object-cover transition-all duration-700 absolute inset-0"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
-            <p className="text-white font-bold text-sm drop-shadow-md truncate">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-5 text-left">
+            <p className="text-white font-bold text-sm md:text-base drop-shadow-md truncate">
               {progressPercent === 100 ? serverData.rewardImage.unlockedMessage : "🔒 완료 시 공개"}
             </p>
-            <p className="text-white/70 text-[10px] mt-0.5 truncate">{serverData.rewardImage.caption}</p>
+            <p className="text-white/70 text-[10px] md:text-xs mt-1 truncate">{serverData.rewardImage.caption}</p>
           </div>
         </div>
 
