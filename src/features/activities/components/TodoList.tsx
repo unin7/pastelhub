@@ -137,21 +137,25 @@ export function TodoList() {
       <div className="w-[380px] shrink-0 flex flex-col gap-3">
         
         {/* 1. 진척도 바 */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-purple-100/50 shadow-lg flex flex-col justify-center shrink-0">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-purple-100/50 shadow-lg flex flex-col justify-center shrink-0">
           <div className="flex justify-between items-end mb-2">
-            <span className="text-2xl font-black text-gray-800 tracking-tight tabular-nums">
+            <span className="text-xl md:text-2xl font-black text-gray-800 tracking-tight tabular-nums">
               {progressPercent}%
             </span>
-            <span className="text-[10px] font-bold text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full uppercase tracking-wider">
+            <span className="text-[9px] md:text-[10px] font-bold text-purple-500 bg-purple-50 px-1.5 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">
                 Progress
             </span>
           </div>
           
-          {/* ✅ 잘 나온다고 하신 진행도 바 스타일 적용 */}
-          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden relative">
+          {/* ✅ 수정된 진행도 바 (배경색 강제 적용) */}
+          <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden shadow-inner border border-slate-100 relative">
             <div 
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-700 ease-out shadow-[0_0_15px_rgba(168,85,247,0.5)]"
-              style={{ width: `${progressPercent}%` }}
+              className="h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+              style={{ 
+                width: `${progressPercent}%`,
+                // Tailwind 클래스가 안 먹힐 때를 대비해 그라데이션을 직접 넣었습니다.
+                background: 'linear-gradient(90deg, #a855f7 0%, #ec4899 100%)' 
+              }}
             />
           </div>
         </div>
