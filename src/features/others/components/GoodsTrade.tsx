@@ -83,27 +83,8 @@ export function GoodsTrade() {
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
       
-      {/* --- 헤더 --- */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
-              <RefreshCw className="w-6 h-6 text-indigo-500" />
-            </div>
-            굿즈 교환소
-          </h1>
-          <p className="text-slate-500 text-sm mt-2 ml-[52px]">
-            중복 굿즈는 교환하고, 없는 굿즈는 채워보세요.
-          </p>
-        </div>
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2">
-          <ArrowRightLeft className="w-4 h-4" />
-          교환글 쓰기
-        </button>
-      </div>
-
-      {/* --- 주의사항 --- */}
-      <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-start gap-3 text-sm text-orange-800">
+      {/* 1. 주의사항 (가장 위로 이동) */}
+      <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-start gap-3 text-sm text-orange-800 shadow-sm">
         <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed">
           <span className="font-bold">주의사항:</span> 이곳은 순수한 <strong>물물교환(Barter)</strong>만을 위한 공간입니다. 
@@ -111,22 +92,37 @@ export function GoodsTrade() {
         </p>
       </div>
 
-      {/* --- 필터 바 --- */}
+      {/* 2. 헤더 (버튼 제거) */}
+      <div className="flex flex-col justify-center gap-2 border-b border-slate-100 pb-6">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+            <RefreshCw className="w-6 h-6 text-indigo-500" />
+          </div>
+          굿즈 교환소
+        </h1>
+        <p className="text-slate-500 text-sm ml-[52px]">
+          중복 굿즈는 교환하고, 없는 굿즈는 채워보세요.
+        </p>
+      </div>
+
+      {/* 3. 필터 바 & 교환글 쓰기 버튼 */}
       <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-4 lg:space-y-0 lg:flex lg:items-center lg:gap-3">
         
         {/* 검색창 */}
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
+          {/* 아이콘 위치 수정: left-4로 여유를 줌 */}
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
           <input
             type="text"
             placeholder="굿즈 이름 검색 (예: 유니 아크릴)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-200 transition-all placeholder:text-slate-400 text-sm text-slate-700"
+            // 텍스트 겹침 방지: pl-12 (48px)로 패딩 확보
+            className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-200 transition-all placeholder:text-slate-400 text-sm text-slate-700"
           />
         </div>
 
-        {/* 필터 그룹 */}
+        {/* 필터 그룹 & 쓰기 버튼 */}
         <div className="flex flex-wrap items-center gap-2">
           {/* 지역 선택 버튼 */}
           <button
@@ -171,6 +167,15 @@ export function GoodsTrade() {
             )}
           >
             <Filter className="w-4 h-4" /> 거래중만
+          </button>
+
+          <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block" />
+
+          {/* ✅ 교환글 쓰기 버튼 (이곳으로 이동) */}
+          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap">
+            <ArrowRightLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">교환글 쓰기</span>
+            <span className="sm:hidden">글쓰기</span>
           </button>
         </div>
       </div>
