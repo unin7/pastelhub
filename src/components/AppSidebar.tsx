@@ -63,61 +63,65 @@ const guideSections = [
 ];
 
 // ----------------------------------------------------------------------
-// 2. 홈 화면 사이드바 (Live Status) - 수정됨
+// 2. 홈 화면 사이드바 (Live Status) - ✅ 수정됨
 // ----------------------------------------------------------------------
 function HomeSidebarContent() {
   const { data: members } = useJsonData<LiveStatus[]>('status');
 
-  // ✅ 1. 방송 중인 사람만 필터링 ('live'가 status에 포함된 경우)
-  const liveMembers = members?.filter(member => member.status.includes('live')) || [];
+  // 1. 방송 중인 사람만 필터링 (status에 'live'가 포함된 경우)
+  const liveMembers = members?.filter(member => member.status && member.status.toLowerCase().includes('live')) || [];
 
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 custom-scrollbar">
-        {/* 방송 중인 멤버가 없을 경우 안내 메시지 */}
+        
+        {/* 방송 중인 멤버가 없을 경우 */}
         {liveMembers.length === 0 && (
-          <div className="flex items-center justify-center h-20 text-xs text-gray-400">
+          <div className="flex items-center justify-center h-24 text-xs text-gray-400 bg-gray-50/50 rounded-xl border border-dashed border-gray-200 mx-1">
             현재 방송 중인 멤버가 없습니다.
           </div>
         )}
 
         {liveMembers.map((member, idx) => {
-           // ✅ 2. 플랫폼 감지 (URL에 x.com 또는 twitter.com이 있으면 X 스페이스)
-           const isXSpace = member.liveUrl.includes('x.com') || member.liveUrl.includes('twitter.com');
+           // ✅ 2. 플랫폼 구분 로직 수정 (status 값 기준)
+           // "X_live" -> 스페이스, 그 외(chzzk_live 등) -> 치지직
+           const isXSpace = member.status === 'X_live';
            
-           // ✅ 3. 색상 설정 (치지직: 녹색 계열, X: 검은색 계열)
+           // ✅ 3. 테두리 색상 설정
+           // p-[3px]로 두께를 키워 잘 보이게 수정
            const borderClass = isXSpace 
-             ? "bg-black" // X: 검은색 테두리
-             : "bg-gradient-to-br from-green-400 to-emerald-500"; // 치지직: 녹색 그라데이션
+             ? "bg-black" // X: 검은색
+             : "bg-gradient-to-br from-[#00ffa3] to-[#00c7a9]"; // 치지직: 네이버 치지직 고유 민트/그린 컬러
 
-           const badgeClass = isXSpace
-             ? "bg-black text-white" 
-             : "bg-green-50 text-green-600";
-
+           // ✅ 4. 뱃지 설정 (요청대로 무조건 빨간색)
+           const badgeClass = "bg-red-100 text-red-600 border border-red-200";
            const badgeText = isXSpace ? "SPACE" : "LIVE";
 
            return (
-             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer group border bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200">
+             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 cursor-pointer group border bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200">
+               
                {/* 프로필 이미지 영역 */}
+               {/* p-[3px]로 늘려서 색상 링이 확실히 보이게 함 */}
                <div 
-                 className={`relative rounded-full flex items-center justify-center flex-shrink-0 p-[2px] transition-transform group-hover:scale-105 ${borderClass}`}
-                 style={{ width: '40px', height: '40px', minWidth: '40px' }} 
+                 className={`relative rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${borderClass}`}
+                 style={{ width: '44px', height: '44px', minWidth: '44px' }} 
                >
-                 <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border-2 border-white" />
-                 {/* 우측 하단 상태 점 (X는 검정, 치지직은 초록) */}
-                 <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-white rounded-full ${isXSpace ? 'bg-black' : 'bg-green-500'}`}></span>
+                 <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border-[2px] border-white" />
+                 
+                 {/* 우측 하단 상태 점 (플랫폼 색상에 맞춤) */}
+                 <span className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${isXSpace ? 'bg-black' : 'bg-[#00ffa3]'}`}></span>
                </div>
                
                <div className="flex-1 min-w-0">
-                 <div className="flex items-center justify-between">
+                 <div className="flex items-center justify-between mb-0.5">
                    <span className="text-sm font-bold truncate text-gray-900">{member.name}</span>
-                   {/* LIVE / SPACE 뱃지 */}
-                   <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full animate-pulse tracking-tight flex-none ml-1 ${badgeClass}`}>
+                   {/* LIVE / SPACE 뱃지 (빨간색 고정) */}
+                   <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-md animate-pulse tracking-tight flex-none ml-1 ${badgeClass}`}>
                      {badgeText}
                    </span>
                  </div>
-                 <p className="text-xs text-gray-400 truncate mt-0.5 group-hover:text-gray-500 transition-colors">
-                   {isXSpace ? '스페이스 청취하기' : '치지직 방송 중!'}
+                 <p className="text-xs text-gray-500 truncate group-hover:text-gray-700 transition-colors">
+                   {member.title || (isXSpace ? '스페이스 청취하기' : '방송 시청하기')}
                  </p>
                </div>
              </a>
@@ -129,7 +133,7 @@ function HomeSidebarContent() {
 }
 
 // ----------------------------------------------------------------------
-// 3. 가이드 화면 사이드바 (이하 동일)
+// 3. 가이드 화면 사이드바 (변경 없음)
 // ----------------------------------------------------------------------
 function GuideSidebarContent() {
   const { setOpenMobile } = useSidebar();
@@ -206,7 +210,7 @@ function GuideSidebarContent() {
 }
 
 // ----------------------------------------------------------------------
-// 4. 메인 AppSidebar
+// 4. 메인 AppSidebar (변경 없음)
 // ----------------------------------------------------------------------
 export function AppSidebar() {
   const location = useLocation();
