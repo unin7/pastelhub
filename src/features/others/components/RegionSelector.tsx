@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, X, ChevronRight, Check } from "lucide-react";
+import { MapPin, X, Check, ChevronRight } from "lucide-react";
 // ✅ 경로가 맞는지 확인해주세요
 import { cn } from "../../../utils/common";
 
@@ -44,20 +44,21 @@ export function RegionSelector({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
-      {/* ✅ [핵심 수정] style 속성으로 너비/높이를 강제 고정 
-        Tailwind 클래스가 무시되더라도 이 설정은 무조건 적용됩니다.
+      {/* ✅ [레이아웃 고정] 
+        - width: 640px, height: 520px 로 조금 더 넉넉하게 잡았습니다.
+        - flex-col 로 헤더/바디/푸터를 나눕니다.
       */}
       <div
-        className="bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
-        style={{ width: '600px', height: '500px', maxWidth: '90vw', maxHeight: '85vh' }}
+        className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+        style={{ width: '640px', height: '520px', maxWidth: '95vw', maxHeight: '90vh' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 1. 헤더 */}
-        <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
-          <h3 className="font-bold text-slate-800 flex items-center gap-2.5 text-lg">
+        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
+          <h3 className="font-bold text-slate-800 flex items-center gap-2 text-lg">
             <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500">
               <MapPin className="w-5 h-5" />
             </div>
@@ -65,41 +66,42 @@ export function RegionSelector({
           </h3>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* 2. 컨텐츠 (2단 레이아웃) */}
-        <div className="flex-1 flex overflow-hidden bg-white min-h-0">
+        {/* 2. 바디 (좌우 2단 레이아웃) */}
+        <div className="flex-1 flex overflow-hidden min-h-0">
           
           {/* [왼쪽] 시/도 선택 */}
-          {/* style width로 너비 고정 */}
+          {/* 너비를 180px로 넓혀서 글자가 잘리지 않게 함 */}
           <div 
-            className="bg-slate-50 border-r border-slate-100 overflow-y-auto shrink-0 custom-scrollbar"
-            style={{ width: '150px' }}
+            className="bg-slate-50/80 border-r border-slate-100 overflow-y-auto shrink-0 custom-scrollbar"
+            style={{ width: '180px' }}
           >
             {MAIN_REGIONS.map((region) => (
               <button
                 key={region}
                 onClick={() => {
                   setTempMain(region);
-                  setTempSub("");
-                  if (region === "전체" || REGION_DATA[region].length === 0) {
+                  setTempSub(""); // 메인 변경 시 서브 초기화
+                  // 데이터가 없는 경우(전체 등) 자동 전체 선택
+                  if (REGION_DATA[region].length === 0) {
                     setTempSub("전체");
                   }
                 }}
                 className={cn(
-                  "w-full text-left px-4 py-3.5 text-sm font-medium transition-all flex justify-between items-center border-l-4 hover:bg-slate-100",
+                  "w-full text-left px-5 py-4 text-sm transition-all flex justify-between items-center border-l-[3px]",
                   tempMain === region
-                    ? "bg-white text-indigo-700 border-l-indigo-500 shadow-sm z-10 relative font-bold"
-                    : "text-slate-500 border-l-transparent"
+                    ? "bg-white text-indigo-700 border-l-indigo-600 font-bold shadow-sm"
+                    : "text-slate-500 border-l-transparent hover:bg-slate-100 hover:text-slate-700 font-medium"
                 )}
               >
                 {region}
                 {tempMain === region && (
-                  <ChevronRight className="w-4 h-4 text-indigo-500" />
+                  <ChevronRight className="w-4 h-4 text-indigo-600" />
                 )}
               </button>
             ))}
@@ -107,21 +109,24 @@ export function RegionSelector({
 
           {/* [오른쪽] 시/군/구 선택 */}
           <div className="flex-1 bg-white overflow-y-auto p-5 custom-scrollbar">
+            {/* 시/군/구 데이터가 있거나, '전체'가 아닌 경우 */}
             {tempMain !== "전체" ? (
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {/* 1. 전체 버튼 */}
                 <button
                   onClick={() => setTempSub("전체")}
                   className={cn(
-                    "px-2 py-2.5 rounded-xl text-sm font-medium border text-center transition-all flex items-center justify-center gap-1.5",
+                    "py-3 px-2 rounded-xl text-sm border text-center transition-all flex items-center justify-center gap-1.5",
                     tempSub === "전체" || tempSub === ""
-                      ? "bg-indigo-50 border-indigo-200 text-indigo-700 ring-1 ring-indigo-100 font-bold"
-                      : "border-slate-200 text-slate-500 hover:border-indigo-100 hover:text-indigo-600 hover:bg-indigo-50/30"
+                      ? "bg-indigo-600 border-indigo-600 text-white font-bold shadow-md transform scale-[1.02]"
+                      : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-indigo-50/50 hover:text-indigo-600 font-medium"
                   )}
                 >
                   {tempSub === "전체" && <Check className="w-3.5 h-3.5" />}
                   전체
                 </button>
                 
+                {/* 2. 나머지 지역 버튼들 */}
                 {REGION_DATA[tempMain]?.map(
                   (sub) =>
                     sub !== "전체" && (
@@ -129,10 +134,10 @@ export function RegionSelector({
                         key={sub}
                         onClick={() => setTempSub(sub)}
                         className={cn(
-                          "px-2 py-2.5 rounded-xl text-sm font-medium border text-center transition-all flex items-center justify-center gap-1.5",
+                          "py-3 px-2 rounded-xl text-sm border text-center transition-all flex items-center justify-center gap-1.5",
                           tempSub === sub
-                            ? "bg-indigo-50 border-indigo-200 text-indigo-700 ring-1 ring-indigo-100 font-bold"
-                            : "border-slate-200 text-slate-500 hover:border-indigo-100 hover:text-indigo-600 hover:bg-indigo-50/30"
+                            ? "bg-indigo-600 border-indigo-600 text-white font-bold shadow-md transform scale-[1.02]"
+                            : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-indigo-50/50 hover:text-indigo-600 font-medium"
                         )}
                       >
                         {tempSub === sub && <Check className="w-3.5 h-3.5" />}
@@ -142,21 +147,25 @@ export function RegionSelector({
                 )}
               </div>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-400 text-sm gap-3 opacity-60">
-                <div className="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
-                  <MapPin className="w-7 h-7 text-slate-300" />
+              // '전체'가 선택되었을 때의 안내 화면
+              <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-4 opacity-80">
+                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
+                  <MapPin className="w-8 h-8 text-slate-300" />
                 </div>
-                <p>좌측에서 시/도를 먼저 선택해주세요.</p>
+                <div className="text-center">
+                  <p className="text-sm font-medium text-slate-500">모든 지역이 선택되었습니다.</p>
+                  <p className="text-xs text-slate-400 mt-1">특정 지역을 찾으시려면 좌측에서 시/도를 선택해주세요.</p>
+                </div>
               </div>
             )}
           </div>
         </div>
 
         {/* 3. 푸터 */}
-        <div className="px-5 py-4 border-t border-slate-100 flex justify-between items-center bg-white shrink-0">
-          <div className="text-sm text-slate-500">
+        <div className="px-6 py-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
+          <div className="text-sm text-slate-600">
             선택된 지역:{" "}
-            <span className="font-bold text-indigo-600 ml-1">
+            <span className="font-bold text-indigo-600 ml-1 text-base">
               {tempMain}
               {tempSub && tempSub !== "전체" ? ` ${tempSub}` : ""}
             </span>
@@ -167,7 +176,7 @@ export function RegionSelector({
               onClose();
             }}
             disabled={!tempMain}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
           >
             선택 완료
           </button>
