@@ -11,8 +11,8 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, 
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, 
   useSidebar 
-} from "../../../components/ui/sidebar"; 
-import { cn } from "../../../utils/common"; 
+} from "./ui/sidebar"; 
+import { cn } from "../utils/common"; 
 
 // ----------------------------------------------------------------------
 // 1. 데이터 정의
