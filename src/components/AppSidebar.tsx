@@ -63,64 +63,68 @@ const guideSections = [
 ];
 
 // ----------------------------------------------------------------------
-// 2. 홈 화면 사이드바 (Live Status) - ✅ 수정됨
+// 2. 홈 화면 사이드바 (Live Status) - 수정됨
 // ----------------------------------------------------------------------
 function HomeSidebarContent() {
   const { data: members } = useJsonData<LiveStatus[]>('status');
 
-  // 1. 방송 중인 사람만 필터링 (status에 'live'가 포함된 경우)
+  // ✅ 1. 방송 중인 사람만 필터링 (status에 'live'가 포함된 경우)
   const liveMembers = members?.filter(member => member.status && member.status.toLowerCase().includes('live')) || [];
 
   return (
     <div className="h-full flex flex-col">
+      {/* 간격 75% 수준으로 축소 (py-6 -> py-4, space-y-3 -> space-y-2) */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 custom-scrollbar">
         
-        {/* 방송 중인 멤버가 없을 경우 */}
+        {/* 방송 중인 멤버가 없을 때 */}
         {liveMembers.length === 0 && (
-          <div className="flex items-center justify-center h-24 text-xs text-gray-400 bg-gray-50/50 rounded-xl border border-dashed border-gray-200 mx-1">
+          <div className="flex items-center justify-center h-20 text-xs text-gray-400">
             현재 방송 중인 멤버가 없습니다.
           </div>
         )}
 
         {liveMembers.map((member, idx) => {
-           // ✅ 2. 플랫폼 구분 로직 수정 (status 값 기준)
-           // "X_live" -> 스페이스, 그 외(chzzk_live 등) -> 치지직
+           // ✅ 2. 플랫폼 구분 (X_live = 스페이스)
            const isXSpace = member.status === 'X_live';
-           
-           // ✅ 3. 테두리 색상 설정
-           // p-[3px]로 두께를 키워 잘 보이게 수정
-           const borderClass = isXSpace 
-             ? "bg-black" // X: 검은색
-             : "bg-gradient-to-br from-[#00ffa3] to-[#00c7a9]"; // 치지직: 네이버 치지직 고유 민트/그린 컬러
-
-           // ✅ 4. 뱃지 설정 (요청대로 무조건 빨간색)
-           const badgeClass = "bg-red-100 text-red-600 border border-red-200";
            const badgeText = isXSpace ? "SPACE" : "LIVE";
+           
+           // ✅ 3. 링 색상 설정 (style로 직접 주입하여 확실하게 적용)
+           const ringStyle = isXSpace 
+             ? { background: '#000000' } // X: 검정
+             : { background: 'linear-gradient(to bottom right, #00ffa3, #00c7a9)' }; // 치지직: 민트/초록
 
            return (
-             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 cursor-pointer group border bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200">
+             // py-3 -> py-2 로 세로 길이 축소됨
+             <a key={idx} href={member.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer group border bg-white shadow-sm border-purple-100 hover:shadow-md hover:border-purple-200">
                
-               {/* 프로필 이미지 영역 */}
-               {/* p-[3px]로 늘려서 색상 링이 확실히 보이게 함 */}
+               {/* 이미지 크기 40px 유지 & 도넛 모양 링 적용 */}
                <div 
-                 className={`relative rounded-full flex items-center justify-center flex-shrink-0 p-[3px] transition-transform group-hover:scale-105 ${borderClass}`}
-                 style={{ width: '44px', height: '44px', minWidth: '44px' }} 
+                 className="relative rounded-full flex items-center justify-center flex-shrink-0 p-[2px] transition-transform group-hover:scale-105"
+                 style={{ 
+                   width: '40px', 
+                   height: '40px', 
+                   minWidth: '40px',
+                   ...ringStyle // 링 색상 적용
+                 }} 
                >
-                 <img src={member.profileImg} alt={member.name} className="w-full h-full rounded-full object-cover bg-white border-[2px] border-white" />
-                 
-                 {/* 우측 하단 상태 점 (플랫폼 색상에 맞춤) */}
-                 <span className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${isXSpace ? 'bg-black' : 'bg-[#00ffa3]'}`}></span>
+                 <img 
+                   src={member.profileImg} 
+                   alt={member.name} 
+                   // border-2 border-white: 링과 이미지 사이 흰색 여백
+                   className="w-full h-full rounded-full object-cover bg-white border-2 border-white" 
+                 />
                </div>
                
                <div className="flex-1 min-w-0">
-                 <div className="flex items-center justify-between mb-0.5">
+                 <div className="flex items-center justify-between">
                    <span className="text-sm font-bold truncate text-gray-900">{member.name}</span>
-                   {/* LIVE / SPACE 뱃지 (빨간색 고정) */}
-                   <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-md animate-pulse tracking-tight flex-none ml-1 ${badgeClass}`}>
+                   {/* LIVE 뱃지: 빨간색 고정 */}
+                   <span className="text-[10px] font-extrabold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full animate-pulse tracking-tight flex-none ml-1">
                      {badgeText}
                    </span>
                  </div>
-                 <p className="text-xs text-gray-500 truncate group-hover:text-gray-700 transition-colors">
+                 {/* ✅ 방송 제목 표시 (없으면 기본 멘트) */}
+                 <p className="text-xs text-gray-400 truncate mt-0.5 group-hover:text-gray-500 transition-colors">
                    {member.title || (isXSpace ? '스페이스 청취하기' : '방송 시청하기')}
                  </p>
                </div>
