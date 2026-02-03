@@ -5,7 +5,8 @@ import {
 } from 'lucide-react';
 import { useJsonData } from "../../../hooks/useJsonData"; 
 import { cn, formatDate } from '../../../utils/common';
-import { RegionSelector } from './RegionSelector';
+// ✅ 빌드 에러 방지를 위해 파일명 소문자 확인
+import { RegionSelector } from './region-selector';
 
 // 타입 정의
 interface TradeItem {
@@ -76,7 +77,7 @@ export function GoodsTrade() {
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
       
-      {/* 1. 주의사항 (최상단 이동) */}
+      {/* 1. 주의사항 (상단 배치) */}
       <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-start gap-3 text-sm text-orange-800 shadow-sm">
         <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed">
@@ -85,7 +86,7 @@ export function GoodsTrade() {
         </p>
       </div>
 
-      {/* 2. 헤더 (버튼 제거) */}
+      {/* 2. 헤더 Title */}
       <div className="flex flex-col justify-center gap-2 border-b border-slate-100 pb-6">
         <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
@@ -98,75 +99,80 @@ export function GoodsTrade() {
         </p>
       </div>
 
-      {/* 3. 필터 바 & 교환글 쓰기 버튼 */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-4 lg:space-y-0 lg:flex lg:items-center lg:gap-3">
+      {/* 3. 필터 바 & 컨트롤 */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:flex-row lg:items-center gap-4">
         
-        {/* 검색창 */}
+        {/* [왼쪽] 검색창 (남는 공간 차지) */}
         <div className="relative flex-1 min-w-[200px]">
-          {/* 아이콘 위치 및 크기 조정 */}
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
+          {/* ✅ 아이콘 위치 수정: left-3, w-5 h-5 */}
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
           <input
             type="text"
             placeholder="굿즈 이름 검색 (예: 유니 아크릴)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            // 텍스트 겹침 방지: pl-12 (48px)
-            className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-200 transition-all placeholder:text-slate-400 text-sm text-slate-700"
+            // ✅ 패딩 수정: pl-10 (40px) - 아이콘과 텍스트 간격 확보
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-200 transition-all placeholder:text-slate-400 text-sm text-slate-700"
           />
         </div>
 
-        {/* 필터 그룹 & 쓰기 버튼 */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => setIsRegionModalOpen(true)}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all whitespace-nowrap min-w-[140px] justify-between",
-              mainRegion !== '전체' 
-                ? "bg-indigo-50 border-indigo-200 text-indigo-700" 
-                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-            )}
-          >
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              <span className="truncate max-w-[100px]">{currentRegionLabel}</span>
-            </div>
-            <ChevronDown className="w-3.5 h-3.5 opacity-50" />
-          </button>
+        {/* [오른쪽] 필터 & 버튼 그룹 */}
+        <div className="flex flex-wrap items-center justify-between gap-3 lg:gap-4 w-full lg:w-auto">
+          
+          {/* 필터 그룹 */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* 지역 선택 */}
+            <button
+              onClick={() => setIsRegionModalOpen(true)}
+              className={cn(
+                "flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-medium transition-all whitespace-nowrap min-w-[120px] justify-between",
+                mainRegion !== '전체' 
+                  ? "bg-indigo-50 border-indigo-200 text-indigo-700" 
+                  : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <span className="truncate max-w-[90px]">{currentRegionLabel}</span>
+              </div>
+              <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+            </button>
 
-          <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block" />
+            <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block" />
 
-          <button
-            onClick={() => setDeliveryOnly(!deliveryOnly)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-sm transition-all font-medium whitespace-nowrap",
-              deliveryOnly 
-                ? "bg-blue-50 border-blue-200 text-blue-600" 
-                : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
-            )}
-          >
-            <Box className="w-4 h-4" /> 택배 가능
-          </button>
+            {/* 택배 */}
+            <button
+              onClick={() => setDeliveryOnly(!deliveryOnly)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-sm transition-all font-medium whitespace-nowrap",
+                deliveryOnly 
+                  ? "bg-blue-50 border-blue-200 text-blue-600" 
+                  : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
+              )}
+            >
+              <Box className="w-4 h-4" /> 택배
+            </button>
 
-          <button
-            onClick={() => setHideCompleted(!hideCompleted)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-sm transition-all font-medium whitespace-nowrap",
-              hideCompleted
-                ? "bg-slate-800 border-slate-800 text-white"
-                : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
-            )}
-          >
-            <Filter className="w-4 h-4" /> 거래중만
-          </button>
+            {/* 거래중 */}
+            <button
+              onClick={() => setHideCompleted(!hideCompleted)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-sm transition-all font-medium whitespace-nowrap",
+                hideCompleted
+                  ? "bg-slate-800 border-slate-800 text-white"
+                  : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
+              )}
+            >
+              <Filter className="w-4 h-4" /> 거래중
+            </button>
+          </div>
 
-          <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block" />
-
-          {/* ✅ 교환글 쓰기 버튼 (여기 배치) */}
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap">
+          {/* ✅ 교환글 쓰기 버튼 (가장 오른쪽 끝으로 배치) */}
+          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap ml-auto lg:ml-2">
             <ArrowRightLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">교환글 쓰기</span>
-            <span className="sm:hidden">글쓰기</span>
+            <span>교환글 쓰기</span>
           </button>
+
         </div>
       </div>
 
